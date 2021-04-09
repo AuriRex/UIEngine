@@ -1,0 +1,12 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "UIEngine",
+  "name": "UIEngine",
+  "author": "AuriRex",
+  "version": "0.0.1",
+  "description": "",
+  "gameVersion": "1.14.0",
+  "dependsOn": {
+    "BSIPA": "^4.1.6"
+  }
+}
