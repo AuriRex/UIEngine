@@ -189,8 +189,6 @@ namespace UIEngine.Managers
 
         public static void SetAnimationTextColor(ref AnimationClip clip, TextMeshProUGUI TMP, Color col, string relativePath, bool withAlpha = false)
         {
-            Logger.log.Error($"Setting clip Text color to: {col}");
-
             clip.SetCurve(relativePath, typeof(TextMeshProUGUI), "m_fontColor.r", AnimationCurve.Constant(0, 0, col.r));
             clip.SetCurve(relativePath, typeof(TextMeshProUGUI), "m_fontColor.g", AnimationCurve.Constant(0, 0, col.g));
             clip.SetCurve(relativePath, typeof(TextMeshProUGUI), "m_fontColor.b", AnimationCurve.Constant(0, 0, col.b));
@@ -201,9 +199,6 @@ namespace UIEngine.Managers
         public static void SetAnimationFromImageViewSettings(ref AnimationClip clip, ImageView imageView, ImageViewSettings settings, string relativePath = "BG")
         {
             ImageView.GradientDirection? gradientDirection = GetGradientDirectionFromSettings(settings);
-
-            Logger.log.Error($"ImageView: {imageView}");
-            Logger.log.Debug($"IVSettings Colors: {settings.BaseColor} {settings.GradientColor0} {settings.GradientColor1}");
 
             SetAnimationImageViewColors(ref clip,
                 relativePath,

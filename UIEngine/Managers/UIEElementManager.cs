@@ -18,7 +18,7 @@ namespace UIEngine.Managers
 
         private static HashSet<ButtonStaticAnimations> _buttonStaticAnimations;
         private static Dictionary<ButtonStaticAnimations, (ButtonType, SpecialType)> _buttonTypeDictionary;
-        //private static Dictionary<ButtonStaticAnimations, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)> _originalbuttonStaticAnimationsClips;
+        private static Dictionary<ButtonStaticAnimations, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)> _newButtonAnimations;
 
         internal UIEElementManager(PluginConfig pluginConfig, UIEColorManager colorManager)
         {
@@ -33,6 +33,9 @@ namespace UIEngine.Managers
 
             if (_buttonTypeDictionary == null)
                 _buttonTypeDictionary = new Dictionary<ButtonStaticAnimations, (ButtonType, SpecialType)>();
+
+            if (_newButtonAnimations == null)
+                _newButtonAnimations = new Dictionary<ButtonStaticAnimations, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)>();
 
             /*if (_originalbuttonStaticAnimationsClips == null)
                 _originalbuttonStaticAnimationsClips = new Dictionary<ButtonStaticAnimations, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)>();*/
@@ -76,6 +79,11 @@ namespace UIEngine.Managers
                 _buttonTypeDictionary.Add(bsa, (bType, sType));
             }
 
+            /*AnimationClip clipNormal;
+            AnimationClip clipHighlighted;
+            AnimationClip clipPressed;
+            AnimationClip clipDisabled;*/
+
             string gameObjectName = bsa.gameObject.name;
 
             UIEColorManager cm = _colorManager;
@@ -99,6 +107,10 @@ namespace UIEngine.Managers
                 //clipNormal = new AnimationClip(clipNormal);
             }*/
 
+            CreateNewDefaultAnimationsIfNeeded(bsa, ref clipNormal, ref clipHighlighted, ref clipPressed, ref clipDisabled, bType);
+
+            Logger.log.Notice("Doing things");
+
             switch (bType)
             {
                 case ButtonType.Play:
@@ -115,7 +127,72 @@ namespace UIEngine.Managers
                     UIEColorManager.SetAnimationImageViewColors(ref clipHighlighted, "BG", cm.IsAdvanced() ? cm.backButtonHighlight : cm.simplePrimaryHighlight);
                     break;
             }
+
+            bsa.HandleButtonSelectionStateDidChange(NoTransitionsButton.SelectionState.Normal);
         }
+
+        private static void CreateNewDefaultAnimationsIfNeeded(ButtonStaticAnimations bsa, ref AnimationClip clipNormal, ref AnimationClip clipHighlighted, ref AnimationClip clipPressed, ref AnimationClip clipDisabled, ButtonType bType)
+        {
+            if (_newButtonAnimations.TryGetValue(bsa, out (AnimationClip, AnimationClip, AnimationClip, AnimationClip) clips))
+            {
+                clipNormal = clips.Item1;
+                clipHighlighted = clips.Item2;
+                clipPressed = clips.Item3;
+                clipDisabled = clips.Item4;
+                return;
+            }
+
+            switch (bType)
+            {
+                case ButtonType.Play:
+                    AssignNewClips(ref clipNormal, ref clipHighlighted, ref clipPressed, ref clipDisabled);
+                    SetDefaultAnimationsForClip(clipNormal, AnimationData.PlayButton.DefaultAnimatedTextButtonNormal);
+                    SetDefaultAnimationsForClip(clipHighlighted, AnimationData.PlayButton.DefaultAnimatedTextButtonHighlighted);
+                    SetDefaultAnimationsForClip(clipPressed, AnimationData.PlayButton.DefaultAnimatedTextButtonPressed);
+                    SetDefaultAnimationsForClip(clipDisabled, AnimationData.PlayButton.DefaultAnimatedTextButtonDisabled);
+                    break;
+            }
+
+            _newButtonAnimations.Add(bsa, (clipNormal, clipHighlighted, clipPressed, clipDisabled));
+        }
+
+        private static void AssignNewClips(ref AnimationClip clipNormal, ref AnimationClip clipHighlighted, ref AnimationClip clipPressed, ref AnimationClip clipDisabled)
+        {
+            var temp = new AnimationClip();
+            temp.legacy = true;
+            temp.name = "CustomNormalClip";
+
+            clipNormal = temp;
+
+            temp = new AnimationClip();
+            temp.legacy = true;
+            temp.name = "CustomHighlightedClip";
+
+            clipHighlighted = temp;
+
+            temp = new AnimationClip();
+            temp.legacy = true;
+            temp.name = "CustomPressedClip";
+
+            clipPressed = temp;
+
+            temp = new AnimationClip();
+            temp.legacy = true;
+            temp.name = "CustomDisabledClip";
+
+            clipDisabled = temp;
+        }
+
+#nullable enable
+        private static void SetDefaultAnimationsForClip(AnimationClip clip, (string, string, float, Type?)[] defaultAnimationData)
+        {
+            foreach((string, string, float, Type?) values in defaultAnimationData)
+            {
+                if (values.Item4 == null) continue;
+                clip.SetCurve(values.Item1, values.Item4, values.Item2, AnimationCurve.Constant(0, 0, values.Item3));
+            }
+        }
+#nullable restore
 
         private static readonly Dictionary<string, SpecialType> _gameObjectNameToType = new Dictionary<string, SpecialType> {
             { "SoloButton", SpecialType.SoloMode },
@@ -181,12 +258,14 @@ namespace UIEngine.Managers
                 // Simple Color thing
                 settings = UIEColorManager.GetSimpleColorButtonSettings().PlayButtonSettings;
             }
-            
 
-            // Don't ask me why the play buttons normal state is pressed ...
+
+            // clipNormal is only used as the initial Clip,
+            // everytime the button leaves the highlighted state it uses clipPressed instead,
+            // so we just set them both to our custom normal state.
+            DecoratePlayButtonStateFromSettings(bsa, ref clipNormal, settings.NormalState, textTMP);
             DecoratePlayButtonStateFromSettings(bsa, ref clipPressed, settings.NormalState, textTMP);
             DecoratePlayButtonStateFromSettings(bsa, ref clipHighlighted, settings.HighlightedState, textTMP);
-            //DecoratePlayButtonStateFromSettings(bsa, ref clipPressed, settings.PressedState, textTMP);
             DecoratePlayButtonStateFromSettings(bsa, ref clipDisabled, settings.DisabledState, textTMP, true);
 
         }

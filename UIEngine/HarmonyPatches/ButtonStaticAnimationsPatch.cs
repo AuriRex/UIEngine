@@ -9,12 +9,12 @@ namespace UIEngine.HarmonyPatches
 	[HarmonyPatch(nameof(ButtonStaticAnimations.Awake), MethodType.Normal)]
 	internal class ButtonStaticAnimationsPatch
 	{
-		static void Postfix(ref ButtonStaticAnimations __instance,
-			ref NoTransitionsButton ____button,
-			ref AnimationClip ____normalClip,
+		static void Prefix(ref ButtonStaticAnimations __instance,
+			ref NoTransitionsButton ____button//,
+/*			ref AnimationClip ____normalClip,
 			ref AnimationClip ____highlightedClip,
 			ref AnimationClip ____pressedClip,
-			ref AnimationClip ____disabledClip)
+			ref AnimationClip ____disabledClip*/)
 		{
 
 			UIEElementManager.AddButton(__instance);
