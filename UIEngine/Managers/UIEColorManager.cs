@@ -148,15 +148,34 @@ namespace UIEngine.Managers
             segmentIconSelectedAndHighlighted = _pluginConfig.GetColor(nameof(PluginConfig.SegmentIconSelectedAndHighlighted));
         }
 
-        private static Buttons _simpleColorButtonSettings;
-        internal static Buttons GetSimpleColorButtonSettings()
+        private static PluginConfig _simpleColorConfig;
+        internal static PluginConfig GetSimpleColorConfig(Color? col = null)
         {
-            if(_simpleColorButtonSettings == null)
+            if(_simpleColorConfig == null || col != null)
             {
-                _simpleColorButtonSettings = Buttons.FromSimpleColor(instance._pluginConfig.SimplePrimaryColor);
+                _simpleColorConfig = PluginConfig.FromSimpleColor(col ?? instance._pluginConfig.SimplePrimaryColor);
             }
 
-            return _simpleColorButtonSettings;
+            return _simpleColorConfig;
+        }
+
+        internal static Buttons GetSimpleColorButtonSettings()
+        {
+            return GetSimpleColorConfig().ButtonSettings;
+        }
+
+        internal static void SetAnimationClipTubeBloomPrePassLightColor(AnimationClip clip, Color col, string relativePath, bool withAlpha = false)
+        {
+            SetAnimationClipColor<TubeBloomPrePassLight>(clip, col, relativePath, "_color", withAlpha);
+        }
+
+        internal static void SetAnimationClipColor<T>(AnimationClip clip, Color col, string relativePath, string attribute = "m_Color", bool withAlpha = false)
+        {
+            clip.SetCurve(relativePath, typeof(T), $"{attribute}.r", AnimationCurve.Constant(0, 0, col.r));
+            clip.SetCurve(relativePath, typeof(T), $"{attribute}.g", AnimationCurve.Constant(0, 0, col.g));
+            clip.SetCurve(relativePath, typeof(T), $"{attribute}.b", AnimationCurve.Constant(0, 0, col.b));
+            if (withAlpha)
+                clip.SetCurve(relativePath, typeof(T), $"{attribute}.a", AnimationCurve.Constant(0, 0, col.a));
         }
 
         internal static void SetAnimationClipSegmentColor(ref AnimationClip clip, SelectableCellStaticAnimationsPatch.SegmentType segmentType, AnimationState animState)
@@ -166,9 +185,7 @@ namespace UIEngine.Managers
             switch (segmentType)
             {
                 case SelectableCellStaticAnimationsPatch.SegmentType.Text:
-                    clip.SetCurve("Text", typeof(CurvedTextMeshPro), "m_fontColor.r", AnimationCurve.Constant(0, 0, c.r));
-                    clip.SetCurve("Text", typeof(CurvedTextMeshPro), "m_fontColor.g", AnimationCurve.Constant(0, 0, c.g));
-                    clip.SetCurve("Text", typeof(CurvedTextMeshPro), "m_fontColor.b", AnimationCurve.Constant(0, 0, c.b));
+                    SetAnimationClipColor<CurvedTextMeshPro>(clip, c, "Text", "m_fontColor");
                     break;
                 case SelectableCellStaticAnimationsPatch.SegmentType.Icon:
                     clip.SetCurve("Icon", typeof(ImageView), "m_Color.r", AnimationCurve.Constant(0, 0, c.r));
@@ -187,16 +204,16 @@ namespace UIEngine.Managers
             tmp.color = color.Value;
         }
 
-        public static void SetAnimationTextColor(ref AnimationClip clip, TextMeshProUGUI TMP, Color col, string relativePath, bool withAlpha = false)
+        public static void SetAnimationTextColor<T>(AnimationClip clip, TextMeshProUGUI TMP, Color col, string relativePath, bool withAlpha = false) where T : TextMeshProUGUI
         {
-            clip.SetCurve(relativePath, typeof(TextMeshProUGUI), "m_fontColor.r", AnimationCurve.Constant(0, 0, col.r));
-            clip.SetCurve(relativePath, typeof(TextMeshProUGUI), "m_fontColor.g", AnimationCurve.Constant(0, 0, col.g));
-            clip.SetCurve(relativePath, typeof(TextMeshProUGUI), "m_fontColor.b", AnimationCurve.Constant(0, 0, col.b));
+            clip.SetCurve(relativePath, typeof(T), "m_fontColor.r", AnimationCurve.Constant(0, 0, col.r));
+            clip.SetCurve(relativePath, typeof(T), "m_fontColor.g", AnimationCurve.Constant(0, 0, col.g));
+            clip.SetCurve(relativePath, typeof(T), "m_fontColor.b", AnimationCurve.Constant(0, 0, col.b));
             if(withAlpha)
-                clip.SetCurve(relativePath, typeof(TextMeshProUGUI), "m_fontColor.a", AnimationCurve.Constant(0, 0, col.a));
+                clip.SetCurve(relativePath, typeof(T), "m_fontColor.a", AnimationCurve.Constant(0, 0, col.a));
         }
        
-        public static void SetAnimationFromImageViewSettings(ref AnimationClip clip, ImageView imageView, ImageViewSettings settings, string relativePath = "BG")
+        public static void SetAnimationFromImageViewSettings(AnimationClip clip, ImageView imageView, ImageViewSettings settings, string relativePath = "BG")
         {
             ImageView.GradientDirection? gradientDirection = GetGradientDirectionFromSettings(settings);
 

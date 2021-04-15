@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using HMUI;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
@@ -23,8 +24,23 @@ namespace UIEngine.Configuration
 
         public Toggles ToggleSettings { get; set; } = new Toggles();
 
-        // Advanced Stuff
+        #region constructor
+        public PluginConfig() { }
 
+        private PluginConfig(Color col)
+        {
+            SimplePrimaryColor = col;
+            ButtonSettings = Buttons.FromSimpleColor(col);
+            ToggleSettings = Toggles.FromSimpleColor(col);
+        }
+
+        public static PluginConfig FromSimpleColor(Color col)
+        {
+            return new PluginConfig(col);
+        }
+        #endregion constructor
+        // Advanced Stuff
+        #region oldstuffdeleteit
         // Toggles
         [UseConverter(typeof(HexColorConverter))]
         public virtual Color OnColorsKnob { get; set; } = new Color(.2f, .8f, .2f);
@@ -103,6 +119,7 @@ namespace UIEngine.Configuration
         public virtual Color PlayButtonBaseNormalGradientOne { get; set; } = new Color(1f, .66f, 0f);
         [UseConverter(typeof(HexColorConverter))]
         public virtual Color PlayButtonBaseNormalGradientTwo { get; set; } = new Color(1f, .66f, 0f);
+        #endregion oldstuffdeleteit
 
         public virtual void Changed()
         {
@@ -114,6 +131,7 @@ namespace UIEngine.Configuration
             Changed();
         }
 
+        #region buttons
         public class Buttons
         {
             public Buttons() { }
@@ -121,6 +139,12 @@ namespace UIEngine.Configuration
             private Buttons(Color col)
             {
                 PlayButtonSettings = PlayButton.FromSimpleColor(col);
+                SoloMode = BigMainMenuButton.FromSimpleColor(col);
+                OnlineMode = BigMainMenuButton.FromSimpleColor(col);
+                PartyMode = BigMainMenuButton.FromSimpleColor(col);
+                CampaignMode = BigMainMenuButton.FromSimpleColor(col);
+                FallbackBigMenuButton = BigMainMenuButton.FromSimpleColor(col);
+                FallbackUnderlinedButton = UnderlinedButton.FromSimpleColor(col);
             }
 
             public static Buttons FromSimpleColor(Color col)
@@ -135,7 +159,24 @@ namespace UIEngine.Configuration
 
             public PlayButton PlayButtonSettings { get; set; } = new PlayButton();
 
-            public class PlayButton
+            [NonNullable, UseConverter(typeof(ListConverter<CustomBigMainMenuButton>))]
+            public List<CustomBigMainMenuButton> CustomBigMainMenuButtons { get; set; } = new List<CustomBigMainMenuButton>();
+
+            public BigMainMenuButton SoloMode { get; set; } = new BigMainMenuButton();
+            public BigMainMenuButton OnlineMode { get; set; } = new BigMainMenuButton();
+            public BigMainMenuButton PartyMode { get; set; } = new BigMainMenuButton();
+            public BigMainMenuButton CampaignMode { get; set; } = new BigMainMenuButton();
+            public BigMainMenuButton FallbackBigMenuButton { get; set; } = new BigMainMenuButton();
+
+
+            [NonNullable, UseConverter(typeof(ListConverter<CustomUnderlinedButton>))]
+            public List<CustomUnderlinedButton> CustomUnderlinedButtons { get; set; } = new List<CustomUnderlinedButton>();
+
+            public UnderlinedButton ModUnderlinedButtons { get; set; } = new UnderlinedButton();//ModButtons
+            public UnderlinedButton FallbackUnderlinedButton { get; set; } = new UnderlinedButton();//ModButtons
+
+            #region button_play
+            public class PlayButton : ISettingsForStateProvider<ISettingsState, NoTransitionsButton.SelectionState>
             {
                 public bool Enable { get; set; } = true;
 
@@ -144,7 +185,7 @@ namespace UIEngine.Configuration
                 //public PlayButtonState PressedState { get; set; } = new PlayButtonState();
                 public PlayButtonState DisabledState { get; set; } = new PlayButtonState();
 
-                public class PlayButtonState
+                public class PlayButtonState : ISettingsState
                 {
                     [UseConverter(typeof(HexColorConverter))]
                     public Color TextColor { get; set; } = Color.white;
@@ -192,18 +233,156 @@ namespace UIEngine.Configuration
                     return new PlayButton(col);
                 }
 
+                public ISettingsState GetSettingsStateForButtonState(NoTransitionsButton.SelectionState state)
+                {
+                    switch(state)
+                    {
+                        case NoTransitionsButton.SelectionState.Disabled:
+                            return DisabledState;
+                        case NoTransitionsButton.SelectionState.Normal:
+                            return NormalState;
+                        case NoTransitionsButton.SelectionState.Highlighted:
+                        case NoTransitionsButton.SelectionState.Pressed:
+                        default:
+                            return HighlightedState;
+                    }
+                }
             }
 
-            public class CustomPlayButton : PlayButton
+            public class CustomPlayButton : PlayButton, ICustomButtonTarget
             {
-                public string TargetGameObjectName { get; set; } = string.Empty;
-                public string TargetTextContent { get; set; } = string.Empty;
+                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetString { get; set; } = string.Empty;
+            }
+            #endregion button_play
+
+            #region button_big_menu
+            public class CustomBigMainMenuButton : BigMainMenuButton, ICustomButtonTarget
+            {
+                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetString { get; set; } = string.Empty;
+            }
+
+            public class BigMainMenuButton
+            {
+
+                public BigMainMenuButtonState NormalState { get; set; } = new BigMainMenuButtonState();
+                public BigMainMenuButtonState HighlightedState { get; set; } = new BigMainMenuButtonState();
+
+                public class BigMainMenuButtonState
+                {
+                    [UseConverter(typeof(HexColorConverter))]
+                    public Color TextColor { get; set; } = Color.white;
+                    [UseConverter(typeof(HexColorConverter))]
+                    public Color GlowColor { get; set; } = Color.white;
+                    [NonNullable]
+                    public ImageViewSettings OverlayColors { get; set; } = new ImageViewSettings();
+                    [NonNullable]
+                    public ImageViewSettings FillColors { get; set; } = new ImageViewSettings();
+
+                    public BigMainMenuButtonState() { }
+
+                    private BigMainMenuButtonState(Color col)
+                    {
+                        FillColors = ImageViewSettings.FromSimpleColor(col);
+                        OverlayColors = new ImageViewSettings();
+                        GlowColor = col;
+                    }
+
+                    internal static BigMainMenuButtonState FromSimpleColor(Color col)
+                    {
+                        return new BigMainMenuButtonState(col);
+                    }
+                }
+
+                public BigMainMenuButton() { }
+
+                private BigMainMenuButton(Color col)
+                {
+                    NormalState = BigMainMenuButtonState.FromSimpleColor(col.SaturatedColor(.8f));
+                    HighlightedState = BigMainMenuButtonState.FromSimpleColor(col);
+                }
+
+                internal static BigMainMenuButton FromSimpleColor(Color col)
+                {
+                    return new BigMainMenuButton(col);
+                }
+
+            }
+            #endregion button_big_menu
+
+            public class CustomUnderlinedButton : UnderlinedButton, ICustomButtonTarget
+            {
+                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetString { get; set; } = string.Empty;
+            }
+
+            public class UnderlinedButton
+            {
+
+                public UnderlinedButtonState NormalState { get; set; } = new UnderlinedButtonState();
+                public UnderlinedButtonState HighlightedState { get; set; } = new UnderlinedButtonState();
+                public UnderlinedButtonState DisabledState { get; set; } = new UnderlinedButtonState();
+
+                public class UnderlinedButtonState
+                {
+                    [UseConverter(typeof(HexColorConverter))]
+                    public Color TextColor { get; set; } = Color.white;
+                    [NonNullable]
+                    public ImageViewSettings BackgroundColors { get; set; } = new ImageViewSettings();
+                    [NonNullable]
+                    public ImageViewSettings StrokeColors { get; set; } = new ImageViewSettings();
+
+                    public UnderlinedButtonState() { }
+                    private UnderlinedButtonState(Color col)
+                    {
+                        BackgroundColors = ImageViewSettings.FromSimpleColor(Color.gray.ColorWithAlpha(col.a));
+                        StrokeColors = ImageViewSettings.FromSimpleColor(Color.white.ColorWithAlpha(col.a));
+                    }
+                    public static UnderlinedButtonState FromSimpleColor(Color col)
+                    {
+                        return new UnderlinedButtonState(col);
+                    }
+                }
+
+                public UnderlinedButton() { }
+                private UnderlinedButton(Color col)
+                {
+                    NormalState = UnderlinedButtonState.FromSimpleColor(col);
+                    HighlightedState = UnderlinedButtonState.FromSimpleColor(col);
+                    DisabledState = UnderlinedButtonState.FromSimpleColor(col.ColorWithAlpha(.2f));
+                }
+                public static UnderlinedButton FromSimpleColor(Color col)
+                {
+                    return new UnderlinedButton(col);
+                }
+            }
+
+            // TODO
+            public class SmallMainMenuButton
+            {
+                [NonNullable]
+                public ImageViewSettings Colors { get; set; } = new ImageViewSettings();
             }
 
         }
+        #endregion buttons
 
+        #region toggles
         public class Toggles
         {
+            public Toggles() { }
+
+            private Toggles(Color col)
+            {
+                ToggleSettings = ToggleSetting.FromSimpleColor(col);
+            }
+
+            public static Toggles FromSimpleColor(Color col)
+            {
+                return new Toggles(col);
+            }
+
             public bool Enable { get; set; } = true;
 
             [NonNullable, UseConverter(typeof(ListConverter<CustomToggleSetting>))]
@@ -221,12 +400,27 @@ namespace UIEngine.Configuration
                 public virtual ToggleState OnHighlightedColors { get; set; } = new ToggleState(new Color(.1f, 1f, .1f), null);
 
                 public virtual ToggleState OffHighlightedColors { get; set; } = new ToggleState(new Color(1f, .1f, .1f), null);
+
+                public ToggleSetting() { }
+
+                private ToggleSetting(Color col)
+                {
+                    OnColors = new ToggleState(col.SaturatedColor(.9f), null);
+                    OffColors = new ToggleState(Color.gray.SaturatedColor(.9f), null);
+                    OnHighlightedColors = new ToggleState(col, null);
+                    OffHighlightedColors = new ToggleState(Color.gray, null);
+                }
+
+                public static ToggleSetting FromSimpleColor(Color col)
+                {
+                    return new ToggleSetting(col);
+                }
             }
 
-            public class CustomToggleSetting : ToggleSetting
+            public class CustomToggleSetting : ToggleSetting, ICustomButtonTarget
             {
-                public string TargetGameObjectName { get; set; } = string.Empty;
-                public string TargetTextContent { get; set; } = string.Empty;
+                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetString { get; set; } = string.Empty;
             }
 
             public class ToggleState
@@ -248,8 +442,8 @@ namespace UIEngine.Configuration
                 public Color BackgroundColor { get; set; } = Color.black;
             }
         }
+        #endregion toggles
 
-        
 
         public class ImageViewSettings
         {
@@ -266,7 +460,7 @@ namespace UIEngine.Configuration
             public string GradientDirection { get; set; } = GRADIENT_DIRECTION_NONE; // None, Vertical, Horizontal
 
             public bool FlipGradient { get; set; } = false;
-            
+
 
             [UseConverter(typeof(HexColorConverter))]
             public Color GradientColor0 { get; set; } = Color.white;
@@ -285,6 +479,28 @@ namespace UIEngine.Configuration
             {
                 return new ImageViewSettings(col);
             }
+        }
+
+        public interface ICustomButtonTarget
+        {
+            public string TargetMatchingMode { get; set; }
+            public string TargetString { get; set; }
+        }
+
+        public interface ISettingsForStateProvider<T, BS>
+        {
+            public T GetSettingsStateForButtonState(BS state);
+        }
+
+        public interface ISettingsState
+        {
+
+        }
+
+        public static class CustomButtonTargetMatchingMode {
+            public const string TARGET_MODE_GAMEOBJECT_NAME = "GameObject";
+            public const string TARGET_MODE_TEXT_CONTENT = "ButtonText";
+            public const string TARGET_MODE_PARENT_GAMEOBJECT_NAME = "ParentGameObject";
         }
 
         public class SegmentSettings

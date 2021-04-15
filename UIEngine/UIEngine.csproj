@@ -54,6 +54,11 @@
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="HMRendering, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMRendering.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="SiraUtil, Version=2.5.2.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
@@ -127,7 +132,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accessors.cs" />
+    <Compile Include="AnimationData\BigMenuButton.cs" />
     <Compile Include="AnimationData\PlayButton.cs" />
+    <Compile Include="AnimationData\TextMenuButton.cs" />
+    <Compile Include="Components\ButtonMaterialPropertyChanger.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ImageViewExtensions.cs" />
     <Compile Include="HarmonyPatches\AnimatedSwitchViewPatch.cs" />
