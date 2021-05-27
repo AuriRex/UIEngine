@@ -1,5 +1,7 @@
 ﻿using HMUI;
 using IPA.Utilities;
+using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace UIEngine

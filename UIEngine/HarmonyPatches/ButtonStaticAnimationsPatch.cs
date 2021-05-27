@@ -5,10 +5,13 @@ using UnityEngine;
 
 namespace UIEngine.HarmonyPatches
 {
-    [HarmonyPatch(typeof(ButtonStaticAnimations))]
+	[HarmonyPatch(typeof(ButtonStaticAnimations))]
 	[HarmonyPatch(nameof(ButtonStaticAnimations.Awake), MethodType.Normal)]
 	internal class ButtonStaticAnimationsPatch
 	{
+
+		public const string BSMLBUTTON_CLONE_NAME = "PracticeButton(Clone)";
+
 		static void Prefix(ref ButtonStaticAnimations __instance,
 			ref NoTransitionsButton ____button//,
 /*			ref AnimationClip ____normalClip,
@@ -17,7 +20,18 @@ namespace UIEngine.HarmonyPatches
 			ref AnimationClip ____disabledClip*/)
 		{
 
-			UIEElementManager.AddButton(__instance);
+			ButtonStaticAnimations bsa = __instance;
+
+			if(bsa.name.Equals(BSMLBUTTON_CLONE_NAME))
+            {
+				__instance.StartCoroutine(Utilities.Utilities.DoAfter(0.1f, () => UIEElementManager.AddButton(bsa)));
+			}
+			else
+            {
+				UIEElementManager.AddButton(bsa);
+			}
+
+			
 
 			/*ButtonType bType = GetButtonType(__instance);
 

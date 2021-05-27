@@ -6,6 +6,7 @@ using HMUI;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
+using UIEngine.Managers;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -23,6 +24,8 @@ namespace UIEngine.Configuration
         public Buttons ButtonSettings { get; set; } = new Buttons();
 
         public Toggles ToggleSettings { get; set; } = new Toggles();
+
+        public Filters DecorationExclusions { get; set; } = new Filters();
 
         #region constructor
         public PluginConfig() { }
@@ -444,6 +447,172 @@ namespace UIEngine.Configuration
         }
         #endregion toggles
 
+        /// <summary>
+        /// Exclude parts of specific buttons or children of objects
+        /// </summary>
+        public class Filters
+        {
+            public bool Enabled { get; set; } = true;
+
+            [NonNullable, UseConverter(typeof(ListConverter<FilterTarget>))]
+            public List<FilterTarget> FilterRules { get; set; } = new List<FilterTarget>() {
+                new FilterTarget() { // SongBrowser stuff
+                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_PARENT_GAMEOBJECT_NAME,
+                    TargetString = "SongBrowserViewController"
+                },
+                new FilterTarget() { // SongBrowser stuff
+                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME,
+                    TargetString = "randomButton",
+                    Exclusions = new List<FilterExclusion>() {
+                        new FilterExclusion()
+                        {
+                            ExclusionType = FilterExclusion.EXCLUSION_TYPE_CHILD_GAMEOBJECT,
+                            ExclusionTarget = "BG"
+                        }
+                    }
+                },
+                new FilterTarget() { // SongBrowser stuff
+                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME,
+                    TargetString = "ClearSortAndFilterButton",
+                    Exclusions = new List<FilterExclusion>() {
+                        new FilterExclusion()
+                        {
+                            ExclusionType = FilterExclusion.EXCLUSION_TYPE_CHILD_GAMEOBJECT,
+                            ExclusionTarget = "BG"
+                        }
+                    }
+                },
+                new FilterTarget() { // Filter the Underline of the SRM button
+                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT,
+                    TargetString = "SRM"
+                }
+            };
+
+            public List<FilterTarget> AllRulesForButtonType(UIEElementManager.ButtonType buttonType)
+            {
+                return AllRulesForButtonType(buttonType, FilterRules);
+            }
+
+            public static List<FilterTarget> AllRulesForButtonType(UIEElementManager.ButtonType buttonType, List<FilterTarget> FilterRules)
+            {
+                List<FilterTarget> list = new List<FilterTarget>();
+
+                foreach(var target in FilterRules)
+                {
+                    if(target.TargetButtonType.Equals(buttonType.ToString()) || target.TargetButtonType.Equals("Any"))
+                    {
+                        list.Add(target);
+                    }
+                }
+
+                return list;
+            }
+
+            public static List<FilterTarget> AllMatchingTargets(ButtonStaticAnimations bsa, UIEElementManager.ButtonType buttonType, List<FilterTarget> FilterRules)
+            {
+                List<FilterTarget> list = new List<FilterTarget>();
+
+                foreach(var target in FilterRules)
+                {
+
+                    switch(target.TargetMatchingMode)
+                    {
+                        case CustomButtonTargetMatchingMode.TARGET_MODE_ANY:
+                            list.Add(target);
+                            break;
+                        case CustomButtonTargetMatchingMode.TARGET_MODE_ASSEMBLY_NAME:
+                            Assembly assembly = UIEElementManager.GetAssemblyForButton(bsa, buttonType);
+                            if (assembly != null && assembly.GetName().Name.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase))
+                                list.Add(target);
+                            break;
+                        case CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME:
+                            if (bsa.gameObject.name.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase))
+                                list.Add(target);
+                            break;
+                        case CustomButtonTargetMatchingMode.TARGET_MODE_PARENT_GAMEOBJECT_NAME:
+                            if ((bsa.gameObject.transform?.parent?.gameObject.name.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase)).GetValueOrDefault(false))
+                                list.Add(target);
+                            break;
+                        case CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT:
+                            string textContent = UIEElementManager.GetTextContentForButtonType(bsa, buttonType);
+                            if (textContent != string.Empty && textContent.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase))
+                                list.Add(target);
+                            break;
+                    }
+
+                }
+
+                return list;
+            }
+
+            public List<FilterExclusion> AllExclusionsForButton(ButtonStaticAnimations bsa, UIEElementManager.ButtonType buttonType)
+            {
+                List<FilterExclusion> list = new List<FilterExclusion>();
+
+                List<FilterTarget> FilterRules = AllRulesForButtonType(buttonType);
+
+                FilterRules = AllMatchingTargets(bsa, buttonType, FilterRules);
+
+                foreach(var target in FilterRules)
+                {
+                    foreach(var exclusion in target.Exclusions)
+                    {
+                        list.Add(exclusion);
+                    }
+                }
+
+                return list;
+            }
+        }
+
+        public class FilterTarget
+        {
+            public string TargetButtonType { get; set; } = UIEElementManager.ButtonType.Underlined.ToString();
+            public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME;
+            public string TargetString { get; set; } = string.Empty;
+
+            [NonNullable, UseConverter(typeof(ListConverter<FilterExclusion>))]
+            public List<FilterExclusion> Exclusions { get; set; } = new List<FilterExclusion>()
+            {
+                new FilterExclusion() {
+                    ExclusionType = FilterExclusion.EXCLUSION_TYPE_CHILD_GAMEOBJECT,
+                    ExclusionTarget = "Underline"
+                }
+            };
+        }
+
+        public class FilterExclusion
+        {
+            [Ignore]
+            public const string EXCLUSION_TYPE_PROPERTY = "Property";
+            [Ignore]
+            public const string EXCLUSION_TYPE_CHILD_GAMEOBJECT = "ChildGameObject";
+
+            [Ignore]
+            public bool IsPropertyExclusion {
+                get
+                {
+                    return ExclusionType.Equals(EXCLUSION_TYPE_PROPERTY);
+                }
+            }
+
+            [Ignore]
+            public bool IsGameObjectExclusion
+            {
+                get
+                {
+                    return ExclusionType.Equals(EXCLUSION_TYPE_CHILD_GAMEOBJECT);
+                }
+            }
+
+            public string ExclusionType { get; set; } = EXCLUSION_TYPE_CHILD_GAMEOBJECT;
+            public string ExclusionTarget { get; set; } = string.Empty;
+            
+        }
 
         public class ImageViewSettings
         {
@@ -498,6 +667,8 @@ namespace UIEngine.Configuration
         }
 
         public static class CustomButtonTargetMatchingMode {
+            public const string TARGET_MODE_ANY = "Any";
+            public const string TARGET_MODE_ASSEMBLY_NAME = "Assembly"; // TODO
             public const string TARGET_MODE_GAMEOBJECT_NAME = "GameObject";
             public const string TARGET_MODE_TEXT_CONTENT = "ButtonText";
             public const string TARGET_MODE_PARENT_GAMEOBJECT_NAME = "ParentGameObject";

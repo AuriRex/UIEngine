@@ -53,5 +53,16 @@ namespace UIEngine.Extensions
             return component;
         }
 
+        public static GameObject GetNthParent(this GameObject ingo, int n)
+        {
+            var go = ingo;
+            while (n > 0)
+            {
+                go = go.transform.parent?.gameObject ?? go;
+                n--;
+            }
+            return go;
+        }
+
     }
 }
