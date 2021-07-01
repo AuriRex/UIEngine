@@ -25,6 +25,8 @@ namespace UIEngine.Configuration
 
         public Toggles ToggleSettings { get; set; } = new Toggles();
 
+        public Segments SegmentSettings { get; set; } = new Segments();
+
         public Filters DecorationExclusions { get; set; } = new Filters();
 
         #region constructor
@@ -43,7 +45,7 @@ namespace UIEngine.Configuration
         }
         #endregion constructor
         // Advanced Stuff
-        #region oldstuffdeleteit
+/*        #region oldstuffdeleteit
         // Toggles
         [UseConverter(typeof(HexColorConverter))]
         public virtual Color OnColorsKnob { get; set; } = new Color(.2f, .8f, .2f);
@@ -122,7 +124,7 @@ namespace UIEngine.Configuration
         public virtual Color PlayButtonBaseNormalGradientOne { get; set; } = new Color(1f, .66f, 0f);
         [UseConverter(typeof(HexColorConverter))]
         public virtual Color PlayButtonBaseNormalGradientTwo { get; set; } = new Color(1f, .66f, 0f);
-        #endregion oldstuffdeleteit
+        #endregion oldstuffdeleteit*/
 
         public virtual void Changed()
         {
@@ -252,17 +254,17 @@ namespace UIEngine.Configuration
                 }
             }
 
-            public class CustomPlayButton : PlayButton, ICustomButtonTarget
+            public class CustomPlayButton : PlayButton, ICustomElementTarget
             {
-                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetMatchingMode { get; set; } = CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
                 public string TargetString { get; set; } = string.Empty;
             }
             #endregion button_play
 
             #region button_big_menu
-            public class CustomBigMainMenuButton : BigMainMenuButton, ICustomButtonTarget
+            public class CustomBigMainMenuButton : BigMainMenuButton, ICustomElementTarget
             {
-                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetMatchingMode { get; set; } = CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
                 public string TargetString { get; set; } = string.Empty;
             }
 
@@ -314,9 +316,9 @@ namespace UIEngine.Configuration
             }
             #endregion button_big_menu
 
-            public class CustomUnderlinedButton : UnderlinedButton, ICustomButtonTarget
+            public class CustomUnderlinedButton : UnderlinedButton, ICustomElementTarget
             {
-                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetMatchingMode { get; set; } = CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
                 public string TargetString { get; set; } = string.Empty;
             }
 
@@ -396,13 +398,15 @@ namespace UIEngine.Configuration
 
             public class ToggleSetting
             {
-                public virtual ToggleState OnColors { get; set; } = new ToggleState(new Color(.2f, .8f, .2f), null);
+                public virtual ToggleState OnColors { get; set; } = new ToggleState(new Color(.2f, .6f, .2f), null);
 
-                public virtual ToggleState OffColors { get; set; } = new ToggleState(new Color(.8f, .2f, .2f), null);
+                public virtual ToggleState OffColors { get; set; } = new ToggleState(new Color(.6f, .2f, .2f), null);
 
-                public virtual ToggleState OnHighlightedColors { get; set; } = new ToggleState(new Color(.1f, 1f, .1f), null);
+                public virtual ToggleState OnHighlightedColors { get; set; } = new ToggleState(new Color(.1f, 1f, .1f), Color.gray);
 
-                public virtual ToggleState OffHighlightedColors { get; set; } = new ToggleState(new Color(1f, .1f, .1f), null);
+                public virtual ToggleState OffHighlightedColors { get; set; } = new ToggleState(new Color(1f, .1f, .1f), Color.gray);
+
+                public virtual ToggleState DisabledColors { get; set; } = new ToggleState(Color.gray, null, 0.25f);
 
                 public ToggleSetting() { }
 
@@ -412,6 +416,7 @@ namespace UIEngine.Configuration
                     OffColors = new ToggleState(Color.gray.SaturatedColor(.9f), null);
                     OnHighlightedColors = new ToggleState(col, null);
                     OffHighlightedColors = new ToggleState(Color.gray, null);
+                    DisabledColors = new ToggleState(Color.gray, null, 0.25f);
                 }
 
                 public static ToggleSetting FromSimpleColor(Color col)
@@ -420,9 +425,9 @@ namespace UIEngine.Configuration
                 }
             }
 
-            public class CustomToggleSetting : ToggleSetting, ICustomButtonTarget
+            public class CustomToggleSetting : ToggleSetting, ICustomElementTarget
             {
-                public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetMatchingMode { get; set; } = CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
                 public string TargetString { get; set; } = string.Empty;
             }
 
@@ -433,19 +438,74 @@ namespace UIEngine.Configuration
 
                 }
 
-                public ToggleState(Color? knob, Color? background)
+                public ToggleState(Color? knob, Color? background, float backgroundAlpha = 0.5f)
                 {
                     KnobColor = knob ?? Color.white;
                     BackgroundColor = background ?? Color.black;
+                    BackgroundAlpha = backgroundAlpha;
                 }
 
                 [UseConverter(typeof(HexColorConverter))]
                 public Color KnobColor { get; set; } = Color.white;
                 [UseConverter(typeof(HexColorConverter))]
                 public Color BackgroundColor { get; set; } = Color.black;
+                public float BackgroundAlpha { get; set; } = .5f;
             }
         }
         #endregion toggles
+
+        #region segments
+        public class Segments
+        {
+            public Segments() { }
+
+            private Segments(Color col)
+            {
+                SegmentSettings = SegmentSetting.FromSimpleColor(col);
+            }
+
+            public static Segments FromSimpleColor(Color col)
+            {
+                return new Segments(col);
+            }
+
+            public bool Enable { get; set; } = true;
+
+            [NonNullable, UseConverter(typeof(ListConverter<CustomSegmentSetting>))]
+            public List<CustomSegmentSetting> CustomSegmentSettings { get; set; } = new List<CustomSegmentSetting>() { new CustomSegmentSetting() };
+
+            [NonNullable]
+            public SegmentSetting SegmentSettings = new SegmentSetting();
+
+            public class SegmentSetting
+            {
+                public SegmentSetting() { }
+                public SegmentSetting(Color col)
+                {
+                    BaseColor = col;
+                    BackgroundColor = new Color(0,0,0,.3f);
+                }
+
+                [UseConverter(typeof(HexColorConverter))]
+                public Color BaseColor { get; set; } = Color.white;
+                [UseConverter(typeof(HexColorConverter))]
+                public Color BackgroundColor { get; set; } = Color.white;
+
+                public static SegmentSetting FromSimpleColor(Color col)
+                {
+                    return new SegmentSetting(col);
+                }
+            }
+
+            public class CustomSegmentSetting : SegmentSetting, ICustomElementTarget
+            {
+                [Ignore]
+                public string TargetMatchingMode { get; set; } = CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
+                public string TargetString { get; set; } = string.Empty;
+            }
+        }
+
+        #endregion segments
 
         /// <summary>
         /// Exclude parts of specific buttons or children of objects
@@ -457,14 +517,14 @@ namespace UIEngine.Configuration
             [NonNullable, UseConverter(typeof(ListConverter<FilterTarget>))]
             public List<FilterTarget> FilterRules { get; set; } = new List<FilterTarget>() {
                 new FilterTarget() { // SongBrowser stuff
-                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
-                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_PARENT_GAMEOBJECT_NAME,
+                    TargetButtonType = UIEButtonManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomElementTargetMatchingMode.TARGET_MODE_PARENT_GAMEOBJECT_NAME,
                     TargetString = "SongBrowserViewController"
                 },
                 new FilterTarget() { // SongBrowser stuff
-                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
-                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME,
-                    TargetString = "randomButton",
+                    TargetButtonType = UIEButtonManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomElementTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME,
+                    TargetString = "randomButton_hoverHintText",
                     Exclusions = new List<FilterExclusion>() {
                         new FilterExclusion()
                         {
@@ -474,9 +534,21 @@ namespace UIEngine.Configuration
                     }
                 },
                 new FilterTarget() { // SongBrowser stuff
-                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
-                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME,
-                    TargetString = "ClearSortAndFilterButton",
+                    TargetButtonType = UIEButtonManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomElementTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME,
+                    TargetString = "ClearSortAndFilterButton_hoverHintText",
+                    Exclusions = new List<FilterExclusion>() {
+                        new FilterExclusion()
+                        {
+                            ExclusionType = FilterExclusion.EXCLUSION_TYPE_CHILD_GAMEOBJECT,
+                            ExclusionTarget = "BG"
+                        }
+                    }
+                },
+                new FilterTarget() { // SongBrowser stuff
+                    TargetButtonType = UIEButtonManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomElementTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME,
+                    TargetString = "playlistExportButton_hoverHintText",
                     Exclusions = new List<FilterExclusion>() {
                         new FilterExclusion()
                         {
@@ -486,18 +558,18 @@ namespace UIEngine.Configuration
                     }
                 },
                 new FilterTarget() { // Filter the Underline of the SRM button
-                    TargetButtonType = UIEElementManager.ButtonType.Underlined.ToString(),
-                    TargetMatchingMode = CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT,
+                    TargetButtonType = UIEButtonManager.ButtonType.Underlined.ToString(),
+                    TargetMatchingMode = CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT,
                     TargetString = "SRM"
                 }
             };
 
-            public List<FilterTarget> AllRulesForButtonType(UIEElementManager.ButtonType buttonType)
+            public List<FilterTarget> AllRulesForButtonType(UIEButtonManager.ButtonType buttonType)
             {
                 return AllRulesForButtonType(buttonType, FilterRules);
             }
 
-            public static List<FilterTarget> AllRulesForButtonType(UIEElementManager.ButtonType buttonType, List<FilterTarget> FilterRules)
+            public static List<FilterTarget> AllRulesForButtonType(UIEButtonManager.ButtonType buttonType, List<FilterTarget> FilterRules)
             {
                 List<FilterTarget> list = new List<FilterTarget>();
 
@@ -512,7 +584,7 @@ namespace UIEngine.Configuration
                 return list;
             }
 
-            public static List<FilterTarget> AllMatchingTargets(ButtonStaticAnimations bsa, UIEElementManager.ButtonType buttonType, List<FilterTarget> FilterRules)
+            public static List<FilterTarget> AllMatchingTargets(ButtonStaticAnimations bsa, UIEButtonManager.ButtonType buttonType, List<FilterTarget> FilterRules)
             {
                 List<FilterTarget> list = new List<FilterTarget>();
 
@@ -521,24 +593,24 @@ namespace UIEngine.Configuration
 
                     switch(target.TargetMatchingMode)
                     {
-                        case CustomButtonTargetMatchingMode.TARGET_MODE_ANY:
+                        case CustomElementTargetMatchingMode.TARGET_MODE_ANY:
                             list.Add(target);
                             break;
-                        case CustomButtonTargetMatchingMode.TARGET_MODE_ASSEMBLY_NAME:
-                            Assembly assembly = UIEElementManager.GetAssemblyForButton(bsa, buttonType);
+                        case CustomElementTargetMatchingMode.TARGET_MODE_ASSEMBLY_NAME:
+                            Assembly assembly = UIEButtonManager.GetAssemblyForButton(bsa, buttonType);
                             if (assembly != null && assembly.GetName().Name.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase))
                                 list.Add(target);
                             break;
-                        case CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME:
+                        case CustomElementTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME:
                             if (bsa.gameObject.name.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase))
                                 list.Add(target);
                             break;
-                        case CustomButtonTargetMatchingMode.TARGET_MODE_PARENT_GAMEOBJECT_NAME:
+                        case CustomElementTargetMatchingMode.TARGET_MODE_PARENT_GAMEOBJECT_NAME:
                             if ((bsa.gameObject.transform?.parent?.gameObject.name.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase)).GetValueOrDefault(false))
                                 list.Add(target);
                             break;
-                        case CustomButtonTargetMatchingMode.TARGET_MODE_TEXT_CONTENT:
-                            string textContent = UIEElementManager.GetTextContentForButtonType(bsa, buttonType);
+                        case CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT:
+                            string textContent = UIEButtonManager.GetTextContentForButtonType(bsa, buttonType);
                             if (textContent != string.Empty && textContent.Equals(target.TargetString, StringComparison.CurrentCultureIgnoreCase))
                                 list.Add(target);
                             break;
@@ -549,7 +621,7 @@ namespace UIEngine.Configuration
                 return list;
             }
 
-            public List<FilterExclusion> AllExclusionsForButton(ButtonStaticAnimations bsa, UIEElementManager.ButtonType buttonType)
+            public List<FilterExclusion> AllExclusionsForButton(ButtonStaticAnimations bsa, UIEButtonManager.ButtonType buttonType)
             {
                 List<FilterExclusion> list = new List<FilterExclusion>();
 
@@ -571,8 +643,10 @@ namespace UIEngine.Configuration
 
         public class FilterTarget
         {
-            public string TargetButtonType { get; set; } = UIEElementManager.ButtonType.Underlined.ToString();
-            public string TargetMatchingMode { get; set; } = CustomButtonTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME;
+            // TODO: use on the other types of elements as well maybe?
+            // public string TargetElement { get; set; } = "Button"; // "Toggle" / "Segment"
+            public string TargetButtonType { get; set; } = UIEButtonManager.ButtonType.Underlined.ToString();
+            public string TargetMatchingMode { get; set; } = CustomElementTargetMatchingMode.TARGET_MODE_GAMEOBJECT_NAME;
             public string TargetString { get; set; } = string.Empty;
 
             [NonNullable, UseConverter(typeof(ListConverter<FilterExclusion>))]
@@ -650,7 +724,7 @@ namespace UIEngine.Configuration
             }
         }
 
-        public interface ICustomButtonTarget
+        public interface ICustomElementTarget
         {
             public string TargetMatchingMode { get; set; }
             public string TargetString { get; set; }
@@ -666,20 +740,12 @@ namespace UIEngine.Configuration
 
         }
 
-        public static class CustomButtonTargetMatchingMode {
+        public static class CustomElementTargetMatchingMode {
             public const string TARGET_MODE_ANY = "Any";
             public const string TARGET_MODE_ASSEMBLY_NAME = "Assembly"; // TODO
             public const string TARGET_MODE_GAMEOBJECT_NAME = "GameObject";
-            public const string TARGET_MODE_TEXT_CONTENT = "ButtonText";
+            public const string TARGET_MODE_TEXT_CONTENT = "ElementText";
             public const string TARGET_MODE_PARENT_GAMEOBJECT_NAME = "ParentGameObject";
-        }
-
-        public class SegmentSettings
-        {
-            [UseConverter(typeof(HexColorConverter))]
-            public Color BaseColor { get; set; } = Color.white;
-            [UseConverter(typeof(HexColorConverter))]
-            public Color BackgroundColor { get; set; } = Color.white;
         }
 
         /*

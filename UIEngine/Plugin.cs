@@ -18,7 +18,7 @@ namespace UIEngine
 
         private Configuration.PluginConfig _config;
         private UIEColorManager _colorManager;
-        private UIEElementManager _elementManager;
+        private UIEButtonManager _elementManager;
 
         [Init]
         public void Init(IPALogger logger, Config conf, Zenjector zenjector)
@@ -28,7 +28,7 @@ namespace UIEngine
             
             _config = conf.Generated<Configuration.PluginConfig>();
             _colorManager = new UIEColorManager(_config);
-            _elementManager = new UIEElementManager(_config, _colorManager);
+            _elementManager = new UIEButtonManager(_config, _colorManager);
 
             zenjector.OnApp<UIECoreInstaller>().WithParameters(_config, _elementManager, _colorManager);
         }

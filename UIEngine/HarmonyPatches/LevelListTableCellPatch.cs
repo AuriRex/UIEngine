@@ -15,11 +15,12 @@ namespace UIEngine.HarmonyPatches
             ref Color ____selectedAndHighlightedBackgroundColor)
         {
 
-            UIEColorManager colorManager = UIEColorManager.instance;
+            // TODO: reimplement
+           /* UIEColorManager colorManager = UIEColorManager.instance;
 
             ____highlightBackgroundColor = colorManager.IsAdvanced() ? colorManager.songListHighlighted : colorManager.simplePrimaryHighlight;
             ____selectedBackgroundColor = colorManager.IsAdvanced() ? colorManager.songListSelected : colorManager.simplePrimarySelected;
-            ____selectedAndHighlightedBackgroundColor = colorManager.IsAdvanced() ? colorManager.songListSelectedAndHighlighted : colorManager.simplePrimarySelectedAndHighlight;
+            ____selectedAndHighlightedBackgroundColor = colorManager.IsAdvanced() ? colorManager.songListSelectedAndHighlighted : colorManager.simplePrimarySelectedAndHighlight;*/
         }
 
     }

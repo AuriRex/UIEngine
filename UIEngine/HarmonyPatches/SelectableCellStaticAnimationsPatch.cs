@@ -22,10 +22,10 @@ namespace UIEngine.HarmonyPatches
 			SegmentType sType = GetSegmentType(__instance);
 
 			// TODO refactor
-			UIEColorManager.SetAnimationClipSegmentColor(ref ____normalAnimationClip, sType, UIEColorManager.AnimationState.Normal);
+			/*UIEColorManager.SetAnimationClipSegmentColor(ref ____normalAnimationClip, sType, UIEColorManager.AnimationState.Normal);
 			UIEColorManager.SetAnimationClipSegmentColor(ref ____selectedAnimationClip, sType, UIEColorManager.AnimationState.Selected);
 			UIEColorManager.SetAnimationClipSegmentColor(ref ____highlightedAnimationClip, sType, UIEColorManager.AnimationState.Highlighted);
-			UIEColorManager.SetAnimationClipSegmentColor(ref ____selectedAndHighlightedAnimationClip, sType, UIEColorManager.AnimationState.SelectedAndHighlighted);
+			UIEColorManager.SetAnimationClipSegmentColor(ref ____selectedAndHighlightedAnimationClip, sType, UIEColorManager.AnimationState.SelectedAndHighlighted);*/
 		}
 
 		private static SegmentType GetSegmentType(SelectableCellStaticAnimations bsa)

@@ -24,6 +24,12 @@ namespace UIEngine
         public static FieldAccessor<SelectableCellStaticAnimations, AnimationClip>.Accessor SelectableCellStaticAnimations_selectedAndHighlightedAnimationClip = FieldAccessor<SelectableCellStaticAnimations, AnimationClip>.GetAccessor("_selectedAndHighlightedAnimationClip");
 
 
+        public static FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.Accessor AnimatedSwitchView_onColors = FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.GetAccessor("_onColors");
+        public static FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.Accessor AnimatedSwitchView_offColors = FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.GetAccessor("_offColors");
+        public static FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.Accessor AnimatedSwitchView_onHighlightedColors = FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.GetAccessor("_onHighlightedColors");
+        public static FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.Accessor AnimatedSwitchView_offHighlightedColors = FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.GetAccessor("_offHighlightedColors");
+        public static FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.Accessor AnimatedSwitchView_disabledColors = FieldAccessor<AnimatedSwitchView, AnimatedSwitchView.ColorBlock>.GetAccessor("_disabledColors");
+
 
         public static FieldAccessor<ImageView, bool>.Accessor ImageView_gradientAccessor = FieldAccessor<ImageView, bool>.GetAccessor("_gradient");
         public static FieldAccessor<ImageView, bool>.Accessor ImageView_flipGradientColorsAccessor = FieldAccessor<ImageView, bool>.GetAccessor("_flipGradientColors");

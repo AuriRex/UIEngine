@@ -24,11 +24,12 @@ namespace UIEngine.HarmonyPatches
 
 			if(bsa.name.Equals(BSMLBUTTON_CLONE_NAME))
             {
-				__instance.StartCoroutine(Utilities.Utilities.DoAfter(0.1f, () => UIEElementManager.AddButton(bsa)));
+				// Let mod menu buttons initialize first
+				__instance.StartCoroutine(Utilities.Utilities.DoAfter(0.1f, () => UIEButtonManager.AddButton(bsa)));
 			}
 			else
             {
-				UIEElementManager.AddButton(bsa);
+				UIEButtonManager.AddButton(bsa);
 			}
 
 			

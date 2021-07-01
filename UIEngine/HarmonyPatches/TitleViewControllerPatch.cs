@@ -16,8 +16,10 @@ namespace UIEngine.HarmonyPatches
 
             ImageView iv = bg?.GetComponent<ImageView>();
 
-            if(iv != null)
-                iv.color = UIEColorManager.instance.IsAdvanced() ? UIEColorManager.instance.bannerTop : UIEColorManager.instance.SimplePrimaryNormal;
+            // TODO reimplement
+
+            /*if(iv != null)
+                iv.color = UIEColorManager.instance.IsAdvanced() ? UIEColorManager.instance.bannerTop : UIEColorManager.instance.SimplePrimaryNormal;*/
         }
 
     }

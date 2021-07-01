@@ -24,14 +24,16 @@ namespace UIEngine.HarmonyPatches
 			ref AnimatedSwitchView.ColorBlock ____disabledColors)
         {
 
-			UIEColorManager colorManager = UIEColorManager.instance;
+			//UIEColorManager colorManager = UIEColorManager.instance;
 
-			____onColors = colorManager.IsAdvanced() ? colorManager.onColors : colorManager.simplePTon;
+			UIEToggleManager.AddElement(__instance);
+
+			/*____onColors = colorManager.IsAdvanced() ? colorManager.onColors : colorManager.simplePTon;
 			____offColors = colorManager.IsAdvanced() ? colorManager.offColors : colorManager.simplePToff;
 			____onHighlightedColors = colorManager.IsAdvanced() ? colorManager.onHighlightedColors : colorManager.simplePTonHighlight;
 			____offHighlightedColors = colorManager.IsAdvanced() ? colorManager.offHighlightedColors : colorManager.simplePToffHighlight;
 			____disabledColors = colorManager.IsAdvanced() ? colorManager.disabledColors : colorManager.simplePTdisabled;
-
+*/
 			/*if (AllAnimatedSwitchViews == null) AllAnimatedSwitchViews = new HashSet<AnimatedSwitchView>();
 
 			if(!AllAnimatedSwitchViews.Contains(__instance))

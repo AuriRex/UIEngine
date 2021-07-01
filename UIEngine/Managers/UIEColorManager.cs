@@ -14,7 +14,7 @@ namespace UIEngine.Managers
         private PluginConfig _pluginConfig;
 
         public static UIEColorManager instance;
-
+/*
         private Color _simplePrimaryColor;
         public Color SimplePrimaryNormal
         {
@@ -26,8 +26,8 @@ namespace UIEngine.Managers
                 simplePrimarySelected = value.SaturatedColor(0.9f);
                 _simplePrimaryColor = value.SaturatedColor(0.8f);
             }
-        }
-        public Color simplePrimaryHighlight;
+        }*/
+        /*public Color simplePrimaryHighlight;
         public Color simplePrimarySelectedAndHighlight;
         public Color simplePrimarySelected;
         public Color simplePrimaryDisabled = new Color(.1f, .1f, .1f, 0.5f);
@@ -46,9 +46,9 @@ namespace UIEngine.Managers
         public AnimatedSwitchView.ColorBlock offColors;
         public AnimatedSwitchView.ColorBlock onHighlightedColors;
         public AnimatedSwitchView.ColorBlock offHighlightedColors;
-        public AnimatedSwitchView.ColorBlock disabledColors;
+        public AnimatedSwitchView.ColorBlock disabledColors;*/
 
-        public Color songListSelected;
+        /*public Color songListSelected;
         public Color songListHighlighted;
         public Color songListSelectedAndHighlighted;
 
@@ -64,7 +64,7 @@ namespace UIEngine.Managers
         public Color segmentIconNormal;
         public Color segmentIconSelected;
         public Color segmentIconHighlighted;
-        public Color segmentIconSelectedAndHighlighted;
+        public Color segmentIconSelectedAndHighlighted;*/
 
         internal UIEColorManager(PluginConfig pluginConfig)
         {
@@ -73,14 +73,16 @@ namespace UIEngine.Managers
             RefreshColors();
         }
 
+        [Obsolete]
         public bool IsAdvanced()
         {
             return _pluginConfig.Advanced;
         }
 
+        [Obsolete]
         internal void RefreshColors()
         {
-            if(onColors == null)
+           /* if(onColors == null)
             {
                 onColors = new AnimatedSwitchView.ColorBlock();
                 offColors = new AnimatedSwitchView.ColorBlock();
@@ -93,12 +95,12 @@ namespace UIEngine.Managers
                 simplePTonHighlight = new AnimatedSwitchView.ColorBlock();
                 simplePToffHighlight = new AnimatedSwitchView.ColorBlock();
                 simplePTdisabled = new AnimatedSwitchView.ColorBlock();
-            }
+            }*/
 
             // TODO: Rework the config system LUL
 
             // Simple primary
-            SimplePrimaryNormal = _pluginConfig.GetColor(nameof(PluginConfig.SimplePrimaryColor));
+            /*SimplePrimaryNormal = _pluginConfig.GetColor(nameof(PluginConfig.SimplePrimaryColor));
             simplePTon.knobColor = SimplePrimaryNormal;
             simplePToff.knobColor = simplePrimaryOff;
             simplePTonHighlight.knobColor = simplePrimaryHighlight;
@@ -109,10 +111,10 @@ namespace UIEngine.Managers
             simplePToff.backgroundColor = simplePrimaryBackground;
             simplePTonHighlight.backgroundColor = simplePrimaryBackground;
             simplePToffHighlight.backgroundColor = simplePrimaryBackground;
-            simplePTdisabled.backgroundColor = simplePrimaryBackground;
+            simplePTdisabled.backgroundColor = simplePrimaryBackground;*/
 
             // Toggles
-            onColors.knobColor = _pluginConfig.GetColor(nameof(PluginConfig.OnColorsKnob));
+            /*onColors.knobColor = _pluginConfig.GetColor(nameof(PluginConfig.OnColorsKnob));
             onColors.backgroundColor = _pluginConfig.GetColor(nameof(PluginConfig.OnColorsBG));
 
             offColors.knobColor = _pluginConfig.GetColor(nameof(PluginConfig.OffColorsKnob));
@@ -145,7 +147,7 @@ namespace UIEngine.Managers
             segmentIconNormal = _pluginConfig.GetColor(nameof(PluginConfig.SegmentIconNormal));
             segmentIconSelected = _pluginConfig.GetColor(nameof(PluginConfig.SegmentIconSelected));
             segmentIconHighlighted = _pluginConfig.GetColor(nameof(PluginConfig.SegmentIconHighlighted));
-            segmentIconSelectedAndHighlighted = _pluginConfig.GetColor(nameof(PluginConfig.SegmentIconSelectedAndHighlighted));
+            segmentIconSelectedAndHighlighted = _pluginConfig.GetColor(nameof(PluginConfig.SegmentIconSelectedAndHighlighted));*/
         }
 
         private static PluginConfig _simpleColorConfig;
@@ -164,6 +166,11 @@ namespace UIEngine.Managers
             return GetSimpleColorConfig().ButtonSettings;
         }
 
+        internal static Toggles GetSimpleColorToggleSettings()
+        {
+            return GetSimpleColorConfig().ToggleSettings;
+        }
+
         internal static void SetAnimationClipTubeBloomPrePassLightColor(AnimationClip clip, Color col, string relativePath, bool withAlpha = false)
         {
             SetAnimationClipColor<TubeBloomPrePassLight>(clip, col, relativePath, "_color", withAlpha);
@@ -178,7 +185,7 @@ namespace UIEngine.Managers
                 clip.SetCurve(relativePath, typeof(T), $"{attribute}.a", AnimationCurve.Constant(0, 0, col.a));
         }
 
-        internal static void SetAnimationClipSegmentColor(ref AnimationClip clip, SelectableCellStaticAnimationsPatch.SegmentType segmentType, AnimationState animState)
+       /* internal static void SetAnimationClipSegmentColor(ref AnimationClip clip, SelectableCellStaticAnimationsPatch.SegmentType segmentType, AnimationState animState)
         {
             Color c = instance.IsAdvanced() ? GetColorForSegmentState(segmentType, animState) : SimpleColorForAnimationState(animState);
 
@@ -188,13 +195,14 @@ namespace UIEngine.Managers
                     SetAnimationClipColor<CurvedTextMeshPro>(clip, c, "Text", "m_fontColor");
                     break;
                 case SelectableCellStaticAnimationsPatch.SegmentType.Icon:
-                    clip.SetCurve("Icon", typeof(ImageView), "m_Color.r", AnimationCurve.Constant(0, 0, c.r));
+                    SetAnimationClipColor<ImageView>(clip, c, "Icon", "m_Color");
+                    *//*clip.SetCurve("Icon", typeof(ImageView), "m_Color.r", AnimationCurve.Constant(0, 0, c.r));
                     clip.SetCurve("Icon", typeof(ImageView), "m_Color.g", AnimationCurve.Constant(0, 0, c.g));
-                    clip.SetCurve("Icon", typeof(ImageView), "m_Color.b", AnimationCurve.Constant(0, 0, c.b));
+                    clip.SetCurve("Icon", typeof(ImageView), "m_Color.b", AnimationCurve.Constant(0, 0, c.b));*//*
                     break;
             }
             
-        }
+        }*/
 
         public static void SetTextColor(CurvedTextMeshPro tmp, Color? color)
         {
@@ -281,7 +289,7 @@ namespace UIEngine.Managers
             clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "m_Color.b", AnimationCurve.Constant(0, 0, baseColor.Value.b));
         }
 
-        private static Color SimpleColorForAnimationState(AnimationState animState, bool normalIsColorless = true)
+        /*private static Color SimpleColorForAnimationState(AnimationState animState, bool normalIsColorless = true)
         {
             switch (animState)
             {
@@ -297,9 +305,10 @@ namespace UIEngine.Managers
                     return instance.simplePrimarySelectedAndHighlight;
             }
             return Color.white;
-        }
+        }*/
 
         // I don't like this
+       /* [Obsolete("blepp")]
         private static Color GetColorForSegmentState(SelectableCellStaticAnimationsPatch.SegmentType segmentType, AnimationState animState)
         {
             switch(segmentType)
@@ -332,7 +341,7 @@ namespace UIEngine.Managers
                     break;
             }
             return Color.white;
-        }
+        }*/
 
         public enum AnimationState
         {
