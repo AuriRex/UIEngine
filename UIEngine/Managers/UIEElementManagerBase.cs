@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UIEngine.Configuration;
 using UnityEngine;
 
@@ -49,13 +46,16 @@ namespace UIEngine.Managers
             _instance = null;
         }
 
+        public abstract bool ShouldDecorateElement(TElement element);
 
         public abstract void DecorateElement(TElement element);
 
         internal static void AddElement(TElement element)
         {
+            if (!Instance.ShouldDecorateElement(element)) return;
             if (element == null) return;
-            if(!Instance.elementSet.Contains(element))
+
+            if (!Instance.elementSet.Contains(element))
             {
                 Instance.elementSet.Add(element);
                 try
@@ -128,11 +128,6 @@ namespace UIEngine.Managers
             clip.legacy = true;
             clip.name = "CustomClip_" + identifier;
             return clip;
-        }
-
-        public static void AssignClip(ref AnimationClip clipToOverwrite, AnimationClip newClip)
-        {
-            clipToOverwrite = newClip;
         }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using HMUI;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UIEngine.Configuration;
 using UIEngine.Extensions;
+using UIEngine.Utilities;
 using UnityEngine;
 
 namespace UIEngine.Managers
@@ -17,10 +15,13 @@ namespace UIEngine.Managers
 
         }
 
+        public override bool ShouldDecorateElement(SelectableCellStaticAnimations element)
+        {
+            return pluginConfig.SegmentSettings.Enable;
+        }
+
         public override void DecorateElement(SelectableCellStaticAnimations element)
         {
-			if (!pluginConfig.SegmentSettings.Enable) return;
-
             PluginConfig.Segments.SegmentSetting settings;
 
             SegmentType segmentType = GetSegmentType(element);
@@ -43,7 +44,7 @@ namespace UIEngine.Managers
             else
             {
                 // Simple Color thing
-                settings = UIEColorManager.GetSimpleColorSegmentSettings().SegmentSettings;
+                settings = UIEAnimationColorUtils.GetSimpleColorSegmentSettings(pluginConfig).SegmentSettings;
                 isDefaultSettings = true;
             }
 
@@ -105,13 +106,13 @@ namespace UIEngine.Managers
             switch (segmentType)
             {
                 case SegmentType.Text:
-                    UIEColorManager.SetAnimationClipColor<CurvedTextMeshPro>(clip, state.BaseColor, "Text", "m_fontColor");
+                    UIEAnimationColorUtils.SetAnimationClipColor<CurvedTextMeshPro>(clip, state.BaseColor, "Text", "m_fontColor");
                     break;
                 case SegmentType.Icon:
-                    UIEColorManager.SetAnimationClipColor<ImageView>(clip, state.BaseColor, "Icon", "m_Color");
+                    UIEAnimationColorUtils.SetAnimationClipColor<ImageView>(clip, state.BaseColor, "Icon", "m_Color");
                     break;
             }
-            UIEColorManager.SetAnimationClipColor<ImageView>(clip, new Color(state.BackgroundColor.r, state.BackgroundColor.g, state.BackgroundColor.b, state.BackgroundAlpha), "BG", "m_Color", withAlpha: true);
+            UIEAnimationColorUtils.SetAnimationClipColor<ImageView>(clip, new Color(state.BackgroundColor.r, state.BackgroundColor.g, state.BackgroundColor.b, state.BackgroundAlpha), "BG", "m_Color", withAlpha: true);
 
         }
 

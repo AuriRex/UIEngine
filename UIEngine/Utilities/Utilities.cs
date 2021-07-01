@@ -49,6 +49,16 @@ namespace UIEngine.Utilities
             return true;
         }
 
+        public static List<string> GetChildrenAsList(Transform trans)
+        {
+            List<string> allChildren = new List<string>();
+            for (int i = 0; i < trans.childCount; i++)
+            {
+                allChildren.Add(trans.GetChild(i).name);
+            }
+            return allChildren;
+        }
+
         private static Type mbvc_type;
         private static MonoBehaviour mbvc;
         public static Assembly GetButtonAssembly(HMUI.ButtonStaticAnimations bsa, string buttonText)

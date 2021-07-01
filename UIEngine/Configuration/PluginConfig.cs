@@ -37,6 +37,7 @@ namespace UIEngine.Configuration
             SimplePrimaryColor = col;
             ButtonSettings = Buttons.FromSimpleColor(col);
             ToggleSettings = Toggles.FromSimpleColor(col);
+            SegmentSettings = Segments.FromSimpleColor(col);
         }
 
         public static PluginConfig FromSimpleColor(Color col)
@@ -45,86 +46,6 @@ namespace UIEngine.Configuration
         }
         #endregion constructor
         // Advanced Stuff
-/*        #region oldstuffdeleteit
-        // Toggles
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OnColorsKnob { get; set; } = new Color(.2f, .8f, .2f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OnColorsBG { get; set; } = Color.black;
-
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OffColorsKnob { get; set; } = new Color(.8f, .2f, .2f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OffColorsBG { get; set; } = Color.black;
-
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OnHighlightedColorsKnob { get; set; } = new Color(.1f, 1f, .1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OnHighlightedColorsBG { get; set; } = Color.black;
-
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OffHighlightedColorsKnob { get; set; } = new Color(1f, .1f, .1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color OffHighlightedColorsBG { get; set; } = Color.black;
-
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color DisabledColorsKnob { get; set; } = new Color(.3f, .3f, .3f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color DisabledColorsBG { get; set; } = Color.black;
-
-
-        // Songlist
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SongListSelected { get; set; } = new Color(.52f, .12f, 1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SongListHighlighted { get; set; } = new Color(1f, .66f, 0f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SongListSelectedAndHighlighted { get; set; } = new Color(.89f, .66f, .31f); // E3A84F
-
-
-        // Other
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color BannerTop { get; set; } = new Color(.52f, .12f, 1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color BackButtonNormal { get; set; } = new Color(.52f, .12f, 1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color BackButtonHighlight { get; set; } = new Color(.72f, .32f, 1f);
-
-
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentIconNormal { get; set; } = new Color(.7f, .7f, .7f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentIconSelected { get; set; } = new Color(.52f, .12f, 1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentIconHighlighted { get; set; } = new Color(.72f, .32f, 1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentIconSelectedAndHighlighted { get; set; } = new Color(.72f, .32f, 1f);
-
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentTextNormal { get; set; } = new Color(.7f, .7f, .7f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentTextSelected { get; set; } = new Color(.52f, .12f, 1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentTextHighlighted { get; set; } = new Color(.72f, .32f, 1f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color SegmentTextSelectedAndHighlighted { get; set; } = new Color(.72f, .32f, 1f);
-
-        // Play Button
-        public virtual bool PlayButtonEnableGradient { get; set; } = false;
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color PlayButtonBaseNormal { get; set; } = new Color(1f, .66f, 0f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color PlayButtonBaseHighlighted { get; set; } = new Color(1f, .66f, 0f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color PlayButtonBasePressed { get; set; } = new Color(1f, .66f, 0f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color PlayButtonBaseDisabled { get; set; } = new Color(.3f, .3f, .3f);
-        // PB G Normal
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color PlayButtonBaseNormalGradientOne { get; set; } = new Color(1f, .66f, 0f);
-        [UseConverter(typeof(HexColorConverter))]
-        public virtual Color PlayButtonBaseNormalGradientTwo { get; set; } = new Color(1f, .66f, 0f);
-        #endregion oldstuffdeleteit*/
 
         public virtual void Changed()
         {
@@ -763,59 +684,11 @@ namespace UIEngine.Configuration
 
         public static class CustomElementTargetMatchingMode {
             public const string TARGET_MODE_ANY = "Any";
-            public const string TARGET_MODE_ASSEMBLY_NAME = "Assembly"; // TODO
+            public const string TARGET_MODE_ASSEMBLY_NAME = "Assembly";
             public const string TARGET_MODE_GAMEOBJECT_NAME = "GameObject";
             public const string TARGET_MODE_TEXT_CONTENT = "ElementText";
             public const string TARGET_MODE_PARENT_GAMEOBJECT_NAME = "ParentGameObject";
         }
 
-        /*
-         * 
-         * {
-         *   "buttonType": "ModeSelect",
-         *   "name": "SoloButton", OR "name": "*" <-- targets all maybe?
-         *   "_<nameOfChildGameObject/an alias of that>": { <--- kinda confusing TODO
-         *      "<state(Selected/Highlighted)>": {
-         *          "BaseColor": "#colval",
-         *          "GradientDirection": "Horizontal/Vertical/None",
-         *          "flip": false,
-         *          "0": "#colval", <-- top/left
-         *          "1": "#colval" <-- bottom/right
-         *      }
-         *   }
-         *   
-         * 
-         * }
-         * 
-         */
-
-
-        // ---
-        // ---
-        // ---
-        internal Color GetColor(string name, float? alpha = null)
-        {
-            Color col = Color.white;
-            
-            Color? newCol = (Color) typeof(PluginConfig).GetProperty(name)?.GetValue(this);
-            col = newCol ?? col;
-
-            if (alpha.HasValue)
-            {
-                col.a = alpha.Value;
-            }
-            else
-            {
-                if (name.EndsWith("BG")) col.a = .5f;
-                else col.a = 1f;
-            }
-
-            return col;
-        }
-
-        internal void SetColor(string name, Color col)
-        {
-            typeof(PluginConfig).GetProperty(name)?.SetValue(this, col);
-        }
     }
 }

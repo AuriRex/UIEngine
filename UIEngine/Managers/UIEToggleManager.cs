@@ -1,10 +1,7 @@
 ﻿using HMUI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UIEngine.Configuration;
+using UIEngine.Utilities;
 using static UIEngine.Extensions.GameObjectExtensions;
 
 namespace UIEngine.Managers
@@ -21,10 +18,13 @@ namespace UIEngine.Managers
             _colorBlocks = new Dictionary<AnimatedSwitchView, (AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock)>();
         }
 
+        public override bool ShouldDecorateElement(AnimatedSwitchView element)
+        {
+            return pluginConfig.ToggleSettings.Enable;
+        }
+
         public override void DecorateElement(AnimatedSwitchView element)
         {
-            if (!pluginConfig.ToggleSettings.Enable) return;
-
             PluginConfig.Toggles.ToggleSetting settings;
 
             CurvedTextMeshPro tmp = element.transform.parent?.gameObject.GetComponentOnChild<CurvedTextMeshPro>("NameText");
@@ -45,7 +45,7 @@ namespace UIEngine.Managers
             else
             {
                 // Simple Color thing
-                settings = UIEColorManager.GetSimpleColorToggleSettings().ToggleSettings;
+                settings = UIEAnimationColorUtils.GetSimpleColorToggleSettings(pluginConfig).ToggleSettings;
                 isDefaultSettings = true;
             }
 

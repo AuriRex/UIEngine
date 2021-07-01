@@ -1,148 +1,101 @@
-﻿using UIEngine.Configuration;
-using System.Collections.Generic;
-using HMUI;
+﻿using HMUI;
 using System;
-using UnityEngine;
+using System.Collections.Generic;
 using System.Linq;
-using static UIEngine.Accessors;
-using UIEngine.Extensions;
-using static UIEngine.Configuration.PluginConfig.Buttons;
+using System.Reflection;
 using TMPro;
 using UIEngine.Components;
-using System.Reflection;
-using UnityEngine.Events;
+using UIEngine.Configuration;
+using UIEngine.Extensions;
+using UIEngine.Utilities;
+using UnityEngine;
+using static UIEngine.Accessors;
+using static UIEngine.Configuration.PluginConfig.Buttons;
+using static UIEngine.Utilities.UIEAnimationColorUtils;
 
 namespace UIEngine.Managers
 {
-    public class UIEButtonManager
+    public class UIEButtonManager : UIEAnimationElementManagerBase<ButtonStaticAnimations>
     {
-        private static PluginConfig _pluginConfig;
-        private static UIEColorManager _colorManager;
-
-        private static HashSet<ButtonStaticAnimations> _buttonStaticAnimations;
         private static Dictionary<ButtonStaticAnimations, (ButtonType, SpecialType)> _buttonTypeDictionary;
-        private static Dictionary<ButtonStaticAnimations, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)> _newButtonAnimations;
         private static Dictionary<ButtonStaticAnimations, Assembly> _assemblyForModButtons;
 
         public static event Action<ButtonStaticAnimations> onButtonDecoratedEvent;
         public static event Action<ButtonStaticAnimations, DecorationFailedReason> onButtonDecorationFailedEvent;
 
-        internal UIEButtonManager(PluginConfig pluginConfig, UIEColorManager colorManager)
+        internal UIEButtonManager(PluginConfig pluginConfig) : base(pluginConfig)
         {
-            _pluginConfig = pluginConfig;
-            _colorManager = colorManager;
+            _buttonTypeDictionary = new Dictionary<ButtonStaticAnimations, (ButtonType, SpecialType)>();
+            _assemblyForModButtons = new Dictionary<ButtonStaticAnimations, Assembly>();
         }
 
-        internal static void AddButton(ButtonStaticAnimations bsa)
+        public override bool ShouldDecorateElement(ButtonStaticAnimations element)
         {
-            if (_buttonStaticAnimations == null)
-                _buttonStaticAnimations = new HashSet<ButtonStaticAnimations>();
-
-            if (_buttonTypeDictionary == null)
-                _buttonTypeDictionary = new Dictionary<ButtonStaticAnimations, (ButtonType, SpecialType)>();
-
-            if (_newButtonAnimations == null)
-                _newButtonAnimations = new Dictionary<ButtonStaticAnimations, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)>();
-
-            if (_assemblyForModButtons == null)
-                _assemblyForModButtons = new Dictionary<ButtonStaticAnimations, Assembly>();
-
-            if (!_pluginConfig.Enabled) return;
-
-            try
-            {
-                if (!_buttonStaticAnimations.Contains(bsa))
-                {
-                    _buttonStaticAnimations.Add(bsa);
-                    DecorateButton(bsa, true);
-                    return;
-                }
-
-                DecorateButton(bsa);
-            }
-            catch(Exception ex)
-            {
-                Logger.log.Error($"Failed to decorate button \"{bsa.gameObject.name}\" : {ex.Message}");
-                Logger.log.Error(ex.StackTrace);
-                onButtonDecorationFailedEvent?.Invoke(bsa, DecorationFailedReason.Error);
-            }
-
+            return pluginConfig.ButtonSettings.Enable;
         }
 
-        internal void RefreshVisuals()
-        {
-            if (!_pluginConfig.Enabled) return;
-
-            foreach (var bsa in _buttonStaticAnimations)
-            {
-                DecorateButton(bsa);
-            }
-        }
-
-        private static void DecorateButton(ButtonStaticAnimations bsa, bool firstTime = false)
+        public override void DecorateElement(ButtonStaticAnimations element)
         {
             ButtonType bType;
             SpecialType sType;
 
-            if (_buttonTypeDictionary.TryGetValue(bsa, out (ButtonType, SpecialType) types))
+            if (_buttonTypeDictionary.TryGetValue(element, out (ButtonType, SpecialType) types))
             {
                 bType = types.Item1;
                 sType = types.Item2;
             }
             else
             {
-                bType = GetButtonType(bsa);
-                sType = GetSpecialType(bsa, bType);
-                _buttonTypeDictionary.Add(bsa, (bType, sType));
+                bType = GetButtonType(element);
+                sType = GetSpecialType(element, bType);
+                _buttonTypeDictionary.Add(element, (bType, sType));
             }
 
-            string gameObjectName = bsa.gameObject.name;
-
-            UIEColorManager cm = _colorManager;
+            string gameObjectName = element.gameObject.name;
 
 
             Assembly assembly = null;
 
-            if(sType == SpecialType.ModUnderline && !_assemblyForModButtons.TryGetValue(bsa, out assembly))
+            if (sType == SpecialType.ModUnderline && !_assemblyForModButtons.TryGetValue(element, out assembly))
             {
-                assembly = GetAssemblyForButton(bsa, bType);
+                assembly = GetAssemblyForButton(element, bType);
 
-                if (assembly != null && !_assemblyForModButtons.ContainsKey(bsa))
+                if (assembly != null && !_assemblyForModButtons.ContainsKey(element))
                 {
-                    _assemblyForModButtons.Add(bsa, assembly);
+                    _assemblyForModButtons.Add(element, assembly);
                 }
             }
 
-            ref AnimationClip clipNormal = ref ButtonStaticAnimations_normalClip(ref bsa);
-            ref AnimationClip clipHighlighted = ref ButtonStaticAnimations_highlightedClip(ref bsa);
-            ref AnimationClip clipPressed = ref ButtonStaticAnimations_pressedClip(ref bsa);
-            ref AnimationClip clipDisabled = ref ButtonStaticAnimations_disabledClip(ref bsa);
+            ref AnimationClip clipNormal = ref ButtonStaticAnimations_normalClip(ref element);
+            ref AnimationClip clipHighlighted = ref ButtonStaticAnimations_highlightedClip(ref element);
+            ref AnimationClip clipPressed = ref ButtonStaticAnimations_pressedClip(ref element);
+            ref AnimationClip clipDisabled = ref ButtonStaticAnimations_disabledClip(ref element);
 
 
-            PluginConfig.Filters filters = _pluginConfig.DecorationExclusions;
+            PluginConfig.Filters filters = pluginConfig.DecorationExclusions;
 
-            if(filters.FilterRules.Any(x => CancelButtonDecoration(x, bType, sType, bsa)))
+            if (filters.FilterRules.Any(x => CancelButtonDecoration(x, bType, sType, element)))
             {
-                Logger.log.Debug($"Filtered decoration of button \"{bsa.name}\" - Not decorating!");
-                onButtonDecorationFailedEvent?.Invoke(bsa, DecorationFailedReason.Filtered);
+                Logger.log.Debug($"Filtered decoration of button \"{element.name}\" - Not decorating!");
+                onButtonDecorationFailedEvent?.Invoke(element, DecorationFailedReason.Filtered);
                 return;
             }
 
 
-            CreateNewDefaultAnimationsIfNeeded(bsa, ref clipNormal, ref clipHighlighted, ref clipPressed, ref clipDisabled, bType);
+            CreateNewDefaultAnimationsIfNeeded(element, ref clipNormal, ref clipHighlighted, ref clipPressed, ref clipDisabled, bType);
 
-            Logger.log.Notice($"Decorating Button \"{bsa.gameObject.name}\" ({bType}) [{assembly?.GetName().Name}]");
+            Logger.log.Notice($"Decorating Button \"{element.gameObject.name}\" ({bType}) [{assembly?.GetName().Name}]");
 
             switch (bType)
             {
                 case ButtonType.Play:
-                    DecoratePlayButton(bsa, clipNormal, clipHighlighted, clipPressed, clipDisabled);
+                    DecoratePlayButton(element, clipNormal, clipHighlighted, clipPressed, clipDisabled);
                     break;
                 case ButtonType.Underlined:
-                    DecorateUnderlinedButton(bsa, clipNormal, clipHighlighted, clipPressed, clipDisabled, sType);
+                    DecorateUnderlinedButton(element, clipNormal, clipHighlighted, clipPressed, clipDisabled, sType);
                     break;
                 case ButtonType.ModeSelection:
-                    DecorateModeSelectionButton(bsa, clipNormal, clipHighlighted, clipPressed, clipDisabled, sType);
+                    DecorateModeSelectionButton(element, clipNormal, clipHighlighted, clipPressed, clipDisabled, sType);
                     break;
                 case ButtonType.Back:
                     // TODO implement custom back buttons based on title name
@@ -151,9 +104,9 @@ namespace UIEngine.Managers
                     break;
             }
 
-            bsa.OnEnable();
+            element.OnEnable();
 
-            onButtonDecoratedEvent?.Invoke(bsa);
+            onButtonDecoratedEvent?.Invoke(element);
         }
 
         private static bool CancelButtonDecoration(PluginConfig.FilterTarget filterTarget, ButtonType bType, SpecialType sType, ButtonStaticAnimations bsa)
@@ -171,9 +124,9 @@ namespace UIEngine.Managers
             return false;
         }
 
-        private static void CreateNewDefaultAnimationsIfNeeded(ButtonStaticAnimations bsa, ref AnimationClip clipNormal, ref AnimationClip clipHighlighted, ref AnimationClip clipPressed, ref AnimationClip clipDisabled, ButtonType bType)
+        private void CreateNewDefaultAnimationsIfNeeded(ButtonStaticAnimations bsa, ref AnimationClip clipNormal, ref AnimationClip clipHighlighted, ref AnimationClip clipPressed, ref AnimationClip clipDisabled, ButtonType bType)
         {
-            if (_newButtonAnimations.TryGetValue(bsa, out (AnimationClip, AnimationClip, AnimationClip, AnimationClip) clips))
+            if (animationClipsForElement.TryGetValue(bsa, out (AnimationClip, AnimationClip, AnimationClip, AnimationClip) clips))
             {
                 clipNormal = clips.Item1;
                 clipHighlighted = clips.Item2;
@@ -187,28 +140,28 @@ namespace UIEngine.Managers
             {
                 case ButtonType.Play:
                     AssignNewClips(ref clipNormal, ref clipHighlighted, ref clipPressed, ref clipDisabled);
-                    SetDefaultAnimationsForClip(clipNormal, AnimationData.PlayButton.DefaultAnimatedTextButtonNormal.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipHighlighted, AnimationData.PlayButton.DefaultAnimatedTextButtonHighlighted.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipPressed, AnimationData.PlayButton.DefaultAnimatedTextButtonPressed.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipDisabled, AnimationData.PlayButton.DefaultAnimatedTextButtonDisabled.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipNormal, AnimationData.PlayButton.DefaultAnimatedTextButtonNormal.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipHighlighted, AnimationData.PlayButton.DefaultAnimatedTextButtonHighlighted.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipPressed, AnimationData.PlayButton.DefaultAnimatedTextButtonPressed.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipDisabled, AnimationData.PlayButton.DefaultAnimatedTextButtonDisabled.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
                     break;
                 case ButtonType.ModeSelection:
                     AssignNewClips(ref clipNormal, ref clipHighlighted, ref clipPressed, ref clipDisabled);
-                    SetDefaultAnimationsForClip(clipNormal, AnimationData.BigMenuButton.DefaultBigMenuButtonNormal.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipHighlighted, AnimationData.BigMenuButton.DefaultBigMenuButtonHighlighted.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipPressed, AnimationData.BigMenuButton.DefaultBigMenuButtonPressed.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipDisabled, AnimationData.BigMenuButton.DefaultBigMenuButtonDisabled.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipNormal, AnimationData.BigMenuButton.DefaultBigMenuButtonNormal.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipHighlighted, AnimationData.BigMenuButton.DefaultBigMenuButtonHighlighted.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipPressed, AnimationData.BigMenuButton.DefaultBigMenuButtonPressed.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipDisabled, AnimationData.BigMenuButton.DefaultBigMenuButtonDisabled.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
                     break;
                 case ButtonType.Underlined:
                     AssignNewClips(ref clipNormal, ref clipHighlighted, ref clipPressed, ref clipDisabled);
-                    SetDefaultAnimationsForClip(clipNormal, AnimationData.TextMenuButton.DefaultTextMenuButtonNormal.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipHighlighted, AnimationData.TextMenuButton.DefaultTextMenuButtonHighlighted.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipPressed, AnimationData.TextMenuButton.DefaultTextMenuButtonPressed.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
-                    SetDefaultAnimationsForClip(clipDisabled, AnimationData.TextMenuButton.DefaultTextMenuButtonDisabled.WithFiltersApplied(_pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipNormal, AnimationData.TextMenuButton.DefaultTextMenuButtonNormal.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipHighlighted, AnimationData.TextMenuButton.DefaultTextMenuButtonHighlighted.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipPressed, AnimationData.TextMenuButton.DefaultTextMenuButtonPressed.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
+                    SetDefaultAnimationsForClip(clipDisabled, AnimationData.TextMenuButton.DefaultTextMenuButtonDisabled.WithFiltersApplied(pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, bType)));
                     break;
             }
             
-            _newButtonAnimations.Add(bsa, (clipNormal, clipHighlighted, clipPressed, clipDisabled));
+            animationClipsForElement.Add(bsa, (clipNormal, clipHighlighted, clipPressed, clipDisabled));
         }
 
         private static void AssignNewClips(ref AnimationClip clipNormal, ref AnimationClip clipHighlighted, ref AnimationClip clipPressed, ref AnimationClip clipDisabled)
@@ -236,15 +189,6 @@ namespace UIEngine.Managers
             temp.name = "CustomDisabledClip";
 
             clipDisabled = temp;
-        }
-
-        private static void SetDefaultAnimationsForClip(AnimationClip clip, (string, string, float, Type)[] defaultAnimationData)
-        {
-            foreach((string, string, float, Type) values in defaultAnimationData)
-            {
-                if (values.Item4 == null) continue;
-                clip.SetCurve(values.Item1, values.Item4, values.Item2, AnimationCurve.Constant(0, 0, values.Item3));
-            }
         }
 
         private static readonly Dictionary<string, SpecialType> _gameObjectNameToType = new Dictionary<string, SpecialType> {
@@ -329,7 +273,7 @@ namespace UIEngine.Managers
             return false;
         }
 
-        private static void DecoratePlayButton(ButtonStaticAnimations bsa, AnimationClip clipNormal, AnimationClip clipHighlighted, AnimationClip clipPressed, AnimationClip clipDisabled)
+        private void DecoratePlayButton(ButtonStaticAnimations bsa, AnimationClip clipNormal, AnimationClip clipHighlighted, AnimationClip clipPressed, AnimationClip clipDisabled)
         {
 
             var curvedTMP = bsa.gameObject.GetComponentOnChild<CurvedTextMeshPro>("Content/Text");
@@ -338,18 +282,18 @@ namespace UIEngine.Managers
 
             PlayButton settings;
 
-            if(_pluginConfig.Advanced)
+            if(pluginConfig.Advanced)
             {
-                if (!GetCustomButtonSettings<CustomPlayButton, PlayButton>(bsa.gameObject, textContent, _pluginConfig.ButtonSettings.CustomPlayButtons, out settings))
+                if (!GetCustomButtonSettings<CustomPlayButton, PlayButton>(bsa.gameObject, textContent, pluginConfig.ButtonSettings.CustomPlayButtons, out settings))
                 {
                     // Use Default Settings instead
-                    settings = _pluginConfig.ButtonSettings.PlayButtonSettings;
+                    settings = pluginConfig.ButtonSettings.PlayButtonSettings;
                 }
             } 
             else
             {
                 // Simple Color thing
-                settings = UIEColorManager.GetSimpleColorButtonSettings().PlayButtonSettings;
+                settings = UIEAnimationColorUtils.GetSimpleColorButtonSettings(pluginConfig).PlayButtonSettings;
             }
 
             var bmcc = bsa.gameObject.GetOrAddComponent<ButtonMaterialPropertyChanger>();
@@ -372,13 +316,13 @@ namespace UIEngine.Managers
 
         private static void DecoratePlayButtonStateFromSettings(ButtonStaticAnimations bsa, AnimationClip clip, PlayButton.PlayButtonState state, TextMeshProUGUI TMP, bool disabledState = false)
         {
-            UIEColorManager.SetAnimationTextColor<CurvedTextMeshPro>(clip, TMP, state.TextColor, "Content/Text");
-            UIEColorManager.SetAnimationFromImageViewSettings(clip, disabledState ? bsa.gameObject.GetComponentOnChild<ImageView>("BGDisabled")  : bsa.gameObject.GetComponentOnChild<ImageView>("BG"), state.BackgroundColors, disabledState ? "BGDisabled" : "BG");
-            UIEColorManager.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Border"), state.BorderColors, "Border");
-            UIEColorManager.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetChildByName("OutlineWrapper")?.GetComponentOnChild<ImageView>("Outline"), state.OutlineColors, "OutlineWrapper/Outline");
+            UIEAnimationColorUtils.SetAnimationTextColor<CurvedTextMeshPro>(clip, TMP, state.TextColor, "Content/Text");
+            UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, disabledState ? bsa.gameObject.GetComponentOnChild<ImageView>("BGDisabled")  : bsa.gameObject.GetComponentOnChild<ImageView>("BG"), state.BackgroundColors, disabledState ? "BGDisabled" : "BG");
+            UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Border"), state.BorderColors, "Border");
+            UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetChildByName("OutlineWrapper")?.GetComponentOnChild<ImageView>("Outline"), state.OutlineColors, "OutlineWrapper/Outline");
         }
 
-        private static void DecorateModeSelectionButton(ButtonStaticAnimations bsa, AnimationClip clipNormal, AnimationClip clipHighlighted, AnimationClip clipPressed, AnimationClip clipDisabled, SpecialType sType)
+        private void DecorateModeSelectionButton(ButtonStaticAnimations bsa, AnimationClip clipNormal, AnimationClip clipHighlighted, AnimationClip clipPressed, AnimationClip clipDisabled, SpecialType sType)
         {
             var curvedTMP = bsa.gameObject.GetComponentOnChild<CurvedTextMeshPro>("Content/Text");
 
@@ -402,18 +346,18 @@ namespace UIEngine.Managers
             }
 
             BigMainMenuButton settings;
-            if (_pluginConfig.Advanced)
+            if (pluginConfig.Advanced)
             {
-                if (!GetCustomButtonSettings<CustomBigMainMenuButton, BigMainMenuButton>(bsa.gameObject, textContent, _pluginConfig.ButtonSettings.CustomBigMainMenuButtons, out settings))
+                if (!GetCustomButtonSettings<CustomBigMainMenuButton, BigMainMenuButton>(bsa.gameObject, textContent, pluginConfig.ButtonSettings.CustomBigMainMenuButtons, out settings))
                 {
                     // Use Default Settings instead
-                    settings = GetFromType(_pluginConfig, sType);
+                    settings = GetFromType(pluginConfig, sType);
                 }
             }
             else
             {
                 // Simple Color thing
-                settings = GetFromType(UIEColorManager.GetSimpleColorConfig(), sType);
+                settings = GetFromType(UIEAnimationColorUtils.GetSimpleColorConfig(pluginConfig), sType);
             }
 
             DecorateModeButtonForState(bsa, clipNormal, settings.NormalState, curvedTMP);
@@ -424,13 +368,13 @@ namespace UIEngine.Managers
 
         private static void DecorateModeButtonForState(ButtonStaticAnimations bsa, AnimationClip clip, BigMainMenuButton.BigMainMenuButtonState state, TextMeshProUGUI TMP)
         {
-            UIEColorManager.SetAnimationTextColor<CurvedTextMeshPro>(clip, TMP, state.TextColor, "Text");
-            UIEColorManager.SetAnimationClipTubeBloomPrePassLightColor(clip, state.GlowColor, "Image/Glow");
-            UIEColorManager.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Image/Image0"), state.FillColors, "Image/Image0");
-            UIEColorManager.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Image/ImageOverlay"), state.OverlayColors, "Image/ImageOverlay");
+            UIEAnimationColorUtils.SetAnimationTextColor<CurvedTextMeshPro>(clip, TMP, state.TextColor, "Text");
+            UIEAnimationColorUtils.SetAnimationClipTubeBloomPrePassLightColor(clip, state.GlowColor, "Image/Glow");
+            UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Image/Image0"), state.FillColors, "Image/Image0");
+            UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Image/ImageOverlay"), state.OverlayColors, "Image/ImageOverlay");
         }
 
-        private static void DecorateUnderlinedButton(ButtonStaticAnimations bsa, AnimationClip clipNormal, AnimationClip clipHighlighted, AnimationClip clipPressed, AnimationClip clipDisabled, SpecialType sType)
+        private void DecorateUnderlinedButton(ButtonStaticAnimations bsa, AnimationClip clipNormal, AnimationClip clipHighlighted, AnimationClip clipPressed, AnimationClip clipDisabled, SpecialType sType)
         {
             // TODO
 
@@ -450,12 +394,12 @@ namespace UIEngine.Managers
             }
 
             UnderlinedButton settings;
-            if (_pluginConfig.Advanced)
+            if (pluginConfig.Advanced)
             {
-                if (!GetCustomButtonSettings<CustomUnderlinedButton, UnderlinedButton>(bsa.gameObject, textContent, _pluginConfig.ButtonSettings.CustomUnderlinedButtons, out settings))
+                if (!GetCustomButtonSettings<CustomUnderlinedButton, UnderlinedButton>(bsa.gameObject, textContent, pluginConfig.ButtonSettings.CustomUnderlinedButtons, out settings))
                 {
                     // Use Default Settings instead
-                    settings = GetFromType(_pluginConfig, sType);
+                    settings = GetFromType(pluginConfig, sType);
                     Logger.log.Notice($"Using default settings for \"{textContent}\"");
                 }
                 else
@@ -466,7 +410,7 @@ namespace UIEngine.Managers
             else
             {
                 // Simple Color thing
-                settings = GetFromType(UIEColorManager.GetSimpleColorConfig(), sType);
+                settings = GetFromType(UIEAnimationColorUtils.GetSimpleColorConfig(pluginConfig), sType);
             }
 
             DecorateUnderlinedButtonForState(bsa, clipNormal, settings.NormalState, curvedTMP);
@@ -475,9 +419,9 @@ namespace UIEngine.Managers
             DecorateUnderlinedButtonForState(bsa, clipDisabled, settings.DisabledState, curvedTMP);
         }
 
-        private static void DecorateUnderlinedButtonForState(ButtonStaticAnimations bsa, AnimationClip clip, UnderlinedButton.UnderlinedButtonState state, TextMeshProUGUI TMP)
+        private void DecorateUnderlinedButtonForState(ButtonStaticAnimations bsa, AnimationClip clip, UnderlinedButton.UnderlinedButtonState state, TextMeshProUGUI TMP)
         {
-            List<PluginConfig.FilterExclusion> list = _pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, ButtonType.Underlined);
+            List<PluginConfig.FilterExclusion> list = pluginConfig.DecorationExclusions.AllExclusionsForButton(bsa, ButtonType.Underlined);
 
             /*Logger.log.Notice($"{bsa.name} - Parent: {bsa.transform?.parent?.name}:");
             foreach(var e in list)
@@ -486,43 +430,43 @@ namespace UIEngine.Managers
             }*/
 
             if(!list.Any(x => x.IsGameObjectExclusion && x.ExclusionTarget.Equals("Content/Text")))
-                UIEColorManager.SetAnimationTextColor<CurvedTextMeshPro>(clip, TMP, state.TextColor, "Content/Text");
+                UIEAnimationColorUtils.SetAnimationTextColor<CurvedTextMeshPro>(clip, TMP, state.TextColor, "Content/Text");
             if (!list.Any(x => x.IsGameObjectExclusion && x.ExclusionTarget.Equals("BG")))
-                UIEColorManager.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("BG"), state.BackgroundColors, "BG");
+                UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("BG"), state.BackgroundColors, "BG");
             if (!list.Any(x => x.IsGameObjectExclusion && x.ExclusionTarget.Equals("Underline")))
-                UIEColorManager.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Underline"), state.StrokeColors, "Underline");
+                UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Underline"), state.StrokeColors, "Underline");
         }
 
         private static ButtonType GetButtonType(ButtonStaticAnimations bsa)
         {
             Transform buttonTransform = bsa.gameObject.transform;
 
-            List<string> childNames = GetChildrenAsList(buttonTransform);
+            List<string> childNames = Utilities.Utilities.GetChildrenAsList(buttonTransform);
 
-            if (ListContainsAll(childNames, playButtonChildren)) return ButtonType.Play;
-            if (ListContainsAll(childNames, underlinedButtonChildren)) return ButtonType.Underlined;
-            if (bsa.gameObject.name.Equals("BackButton") && ListContainsAll(childNames, backButtonChildren)) return ButtonType.Back;
+            if (Utilities.Utilities.ListContainsAll(childNames, playButtonChildren)) return ButtonType.Play;
+            if (Utilities.Utilities.ListContainsAll(childNames, underlinedButtonChildren)) return ButtonType.Underlined;
+            if (bsa.gameObject.name.Equals("BackButton") && Utilities.Utilities.ListContainsAll(childNames, backButtonChildren)) return ButtonType.Back;
 
-            if(ListContainsAll(childNames, modeButtonChildren))
+            if(Utilities.Utilities.ListContainsAll(childNames, modeButtonChildren))
             {
                 if(buttonTransform.childCount > 0)
                 {
-                    List<string> childrenOfChild0 = GetChildrenAsList(buttonTransform.GetChild(0));
+                    List<string> childrenOfChild0 = Utilities.Utilities.GetChildrenAsList(buttonTransform.GetChild(0));
 
-                    if(ListContainsAll(childrenOfChild0, modeButtonImageChildren))
+                    if(Utilities.Utilities.ListContainsAll(childrenOfChild0, modeButtonImageChildren))
                     {
                         return ButtonType.ModeSelection;
                     }
                 }
             }
 
-            if(ListContainsAll(childNames, menuSmallButtonChildren))
+            if(Utilities.Utilities.ListContainsAll(childNames, menuSmallButtonChildren))
             {
                 if (buttonTransform.childCount > 0)
                 {
-                    List<string> childrenOfChild0 = GetChildrenAsList(buttonTransform.GetChild(0));
+                    List<string> childrenOfChild0 = Utilities.Utilities.GetChildrenAsList(buttonTransform.GetChild(0));
 
-                    if (ListContainsAll(childrenOfChild0, menuSmallButtonImageChildren))
+                    if (Utilities.Utilities.ListContainsAll(childrenOfChild0, menuSmallButtonImageChildren))
                     {
                         return ButtonType.MainMenuSmall;
                     }
@@ -530,29 +474,6 @@ namespace UIEngine.Managers
             }
 
             return ButtonType.Unknown;
-        }
-
-        public static List<string> GetChildrenAsList(Transform trans)
-        {
-            List<string> allChildren = new List<string>();
-            for (int i = 0; i < trans.childCount; i++)
-            {
-                allChildren.Add(trans.GetChild(i).name);
-            }
-            return allChildren;
-        }
-
-        // TODO Move to Util class idk
-        public static bool ListContainsAll(List<string> list, List<string> targets)
-        {
-            foreach (string target in targets)
-            {
-                if (!list.Contains(target))
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         private static List<string> playButtonChildren = new string[] { "BG", "BGDisabled", "Content", "Border", "OutlineWrapper" }.ToList();
