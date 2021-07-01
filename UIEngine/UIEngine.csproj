@@ -147,7 +147,8 @@
     <Compile Include="Installers\UIECoreInstaller.cs" />
     <Compile Include="Managers\UIEButtonManager.cs" />
     <Compile Include="Managers\UIEColorManager.cs" />
-    <Compile Include="Managers\UIEElementManager.cs" />
+    <Compile Include="Managers\UIEElementManagerBase.cs" />
+    <Compile Include="Managers\UIESegmentManager.cs" />
     <Compile Include="Managers\UIEToggleManager.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />

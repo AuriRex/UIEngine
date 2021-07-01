@@ -19,7 +19,8 @@ namespace UIEngine.HarmonyPatches
 			ref AnimationClip ____selectedAndHighlightedAnimationClip)
         {
 
-			SegmentType sType = GetSegmentType(__instance);
+			UIESegmentManager.AddElement(__instance);
+			//SegmentType sType = GetSegmentType(__instance);
 
 			// TODO refactor
 			/*UIEColorManager.SetAnimationClipSegmentColor(ref ____normalAnimationClip, sType, UIEColorManager.AnimationState.Normal);
@@ -28,7 +29,7 @@ namespace UIEngine.HarmonyPatches
 			UIEColorManager.SetAnimationClipSegmentColor(ref ____selectedAndHighlightedAnimationClip, sType, UIEColorManager.AnimationState.SelectedAndHighlighted);*/
 		}
 
-		private static SegmentType GetSegmentType(SelectableCellStaticAnimations bsa)
+		/*private static SegmentType GetSegmentType(SelectableCellStaticAnimations bsa)
 		{
 			Transform buttonTransform = bsa.gameObject.transform;
 			List<string> childNames = new List<string>();
@@ -44,7 +45,7 @@ namespace UIEngine.HarmonyPatches
 			return SegmentType.Unknown;
 		}
 
-		private static bool ContainsAll(List<string> list, List<string> targets)
+		*//*private static bool ContainsAll(List<string> list, List<string> targets)
 		{
 			foreach (string target in targets)
 			{
@@ -54,7 +55,7 @@ namespace UIEngine.HarmonyPatches
 				}
 			}
 			return true;
-		}
+		}*//*
 
 		private static List<string> iconSegmentChildren = new string[] { "BG", "Icon" }.ToList();
 		private static List<string> textSegmentChildren = new string[] { "BG", "Text" }.ToList();
@@ -64,7 +65,7 @@ namespace UIEngine.HarmonyPatches
 			Icon,
 			Text,
 			Unknown
-		}
+		}*/
 	}
 
 	/*[SerializeField]

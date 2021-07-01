@@ -482,14 +482,16 @@ namespace UIEngine.Configuration
                 public SegmentSetting() { }
                 public SegmentSetting(Color col)
                 {
-                    BaseColor = col;
-                    BackgroundColor = new Color(0,0,0,.3f);
+                    Normal = new SegmentState(col.SaturatedColor(.8f), null);
+                    Highlighted = new SegmentState(col, null);
+                    Selected = new SegmentState(col.SaturatedColor(.9f), Color.gray, 0.5f);
+                    SelectedAndHighlighted = new SegmentState(col, Color.gray, 0.5f);
                 }
 
-                [UseConverter(typeof(HexColorConverter))]
-                public Color BaseColor { get; set; } = Color.white;
-                [UseConverter(typeof(HexColorConverter))]
-                public Color BackgroundColor { get; set; } = Color.white;
+                public SegmentState Normal { get; set; } = new SegmentState(Color.white, null);
+                public SegmentState Highlighted { get; set; } = new SegmentState(new Color(0.8f, 0f, 0.8f), Color.white);
+                public SegmentState Selected { get; set; } = new SegmentState(new Color(0.8f, 0f, 0.8f), Color.white, 0.32f);
+                public SegmentState SelectedAndHighlighted { get; set; } = new SegmentState(new Color(0.9f, 0f, 0.9f), Color.white, 0.35f);
 
                 public static SegmentSetting FromSimpleColor(Color col)
                 {
@@ -503,6 +505,25 @@ namespace UIEngine.Configuration
                 public string TargetMatchingMode { get; set; } = CustomElementTargetMatchingMode.TARGET_MODE_TEXT_CONTENT;
                 public string TargetString { get; set; } = string.Empty;
             }
+
+            public class SegmentState
+            {
+                public SegmentState() { }
+                public SegmentState(Color col, Color? backgroundColor, float backgroundAlpha = 0.3f)
+                {
+                    BaseColor = col;
+                    BackgroundColor = backgroundColor ?? Color.black;
+                    BackgroundAlpha = backgroundAlpha;
+                }
+
+                [UseConverter(typeof(HexColorConverter))]
+                public Color BaseColor { get; set; } = Color.white;
+                [UseConverter(typeof(HexColorConverter))]
+                public Color BackgroundColor { get; set; } = Color.white;
+                public float BackgroundAlpha { get; set; } = 0.5f;
+
+            }
+
         }
 
         #endregion segments

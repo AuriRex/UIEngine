@@ -171,6 +171,11 @@ namespace UIEngine.Managers
             return GetSimpleColorConfig().ToggleSettings;
         }
 
+        internal static Segments GetSimpleColorSegmentSettings()
+        {
+            return GetSimpleColorConfig().SegmentSettings;
+        }
+
         internal static void SetAnimationClipTubeBloomPrePassLightColor(AnimationClip clip, Color col, string relativePath, bool withAlpha = false)
         {
             SetAnimationClipColor<TubeBloomPrePassLight>(clip, col, relativePath, "_color", withAlpha);

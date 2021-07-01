@@ -37,6 +37,18 @@ namespace UIEngine.Utilities
             yield break;
         }
 
+        public static bool ListContainsAll(List<string> list, List<string> targets)
+        {
+            foreach (string target in targets)
+            {
+                if (!list.Contains(target))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private static Type mbvc_type;
         private static MonoBehaviour mbvc;
         public static Assembly GetButtonAssembly(HMUI.ButtonStaticAnimations bsa, string buttonText)

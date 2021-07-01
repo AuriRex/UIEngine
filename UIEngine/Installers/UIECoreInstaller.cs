@@ -22,6 +22,7 @@ namespace UIEngine.Installers
             Container.Bind<PluginConfig>().FromInstance(_pluginConfig).AsSingle();
             Container.Bind<UIEButtonManager>().FromInstance(_elementManager).AsSingle();
             Container.BindInterfacesAndSelfTo<UIEToggleManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UIESegmentManager>().AsSingle();
             Container.Bind<UIEColorManager>().FromInstance(_colorManager).AsSingle();
             // TODO I swear I'm gonna do something with this eventually xp
         }

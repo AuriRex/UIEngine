@@ -8,10 +8,10 @@ using UnityEngine;
 
 namespace UIEngine.Managers
 {
-    public abstract class UIEElementManager<TElement> : IDisposable where TElement : MonoBehaviour
+    public abstract class UIEElementManagerBase<TElement> : IDisposable where TElement : MonoBehaviour
     {
-        private static UIEElementManager<TElement> _instance;
-        internal static UIEElementManager<TElement> Instance
+        private static UIEElementManagerBase<TElement> _instance;
+        internal static UIEElementManagerBase<TElement> Instance
         {
             get
             {
@@ -35,7 +35,7 @@ namespace UIEngine.Managers
 
         protected HashSet<TElement> elementSet;
 
-        public UIEElementManager(PluginConfig pluginConfig)
+        public UIEElementManagerBase(PluginConfig pluginConfig)
         {
             this.pluginConfig = pluginConfig;
 
@@ -110,5 +110,29 @@ namespace UIEngine.Managers
             return false;
         }
 
+    }
+
+    public abstract class UIEAnimationElementManagerBase<TElement> : UIEElementManagerBase<TElement> where TElement : MonoBehaviour
+    {
+        protected (AnimationClip, AnimationClip, AnimationClip, AnimationClip)? defaultCustomAnimationClips;
+        protected Dictionary<TElement, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)> animationClipsForElement;
+
+        public UIEAnimationElementManagerBase(PluginConfig pluginConfig) : base(pluginConfig)
+        {
+            animationClipsForElement = new Dictionary<TElement, (AnimationClip, AnimationClip, AnimationClip, AnimationClip)>();
+        }
+
+        public static AnimationClip CreateNewAnimationClip(string identifier = "UIEngine_Unknown")
+        {
+            var clip = new AnimationClip();
+            clip.legacy = true;
+            clip.name = "CustomClip_" + identifier;
+            return clip;
+        }
+
+        public static void AssignClip(ref AnimationClip clipToOverwrite, AnimationClip newClip)
+        {
+            clipToOverwrite = newClip;
+        }
     }
 }

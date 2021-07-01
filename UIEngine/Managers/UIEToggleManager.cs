@@ -9,7 +9,7 @@ using static UIEngine.Extensions.GameObjectExtensions;
 
 namespace UIEngine.Managers
 {
-    public class UIEToggleManager : UIEElementManager<AnimatedSwitchView>
+    public class UIEToggleManager : UIEElementManagerBase<AnimatedSwitchView>
     {
 
         private (AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock)? _customDefaultColorBlocks = null;
@@ -57,12 +57,12 @@ namespace UIEngine.Managers
 
             }
 
-            var colorBlocks = CreateOrAssignColorBlocksForSettings(element, settings, isDefaultSettings);
+            var colorBlocks = CreateOrGetColorBlocksForSettings(element, settings, isDefaultSettings);
 
-            DecorateColorBlocks(element, colorBlocks);
+            AssignColorBlocks(element, colorBlocks);
         }
 
-        private void DecorateColorBlocks(AnimatedSwitchView element, (AnimatedSwitchView.ColorBlock on, AnimatedSwitchView.ColorBlock off, AnimatedSwitchView.ColorBlock onHighlight, AnimatedSwitchView.ColorBlock offHighlight, AnimatedSwitchView.ColorBlock disabled) colorBlocks)
+        private void AssignColorBlocks(AnimatedSwitchView element, (AnimatedSwitchView.ColorBlock on, AnimatedSwitchView.ColorBlock off, AnimatedSwitchView.ColorBlock onHighlight, AnimatedSwitchView.ColorBlock offHighlight, AnimatedSwitchView.ColorBlock disabled) colorBlocks)
         {
 
             Accessors.AnimatedSwitchView_onColors(ref element) = colorBlocks.on;
@@ -73,8 +73,13 @@ namespace UIEngine.Managers
 
         }
 
-        private (AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock) CreateOrAssignColorBlocksForSettings(AnimatedSwitchView element, PluginConfig.Toggles.ToggleSetting settings, bool isDefaultSettings)
+        internal (AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock, AnimatedSwitchView.ColorBlock) CreateOrGetColorBlocksForSettings(AnimatedSwitchView element, PluginConfig.Toggles.ToggleSetting settings, bool isDefaultSettings)
         {
+            if(_colorBlocks.TryGetValue(element, out var cachedBlocks))
+            {
+                return cachedBlocks;
+            }
+
             if(isDefaultSettings)
             {
                 var defaultBlocks = _customDefaultColorBlocks.GetValueOrDefault();
