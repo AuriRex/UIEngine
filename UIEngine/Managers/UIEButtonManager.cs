@@ -1,4 +1,5 @@
 ﻿using HMUI;
+using IPA.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -370,7 +371,27 @@ namespace UIEngine.Managers
         {
             UIEAnimationColorUtils.SetAnimationTextColor<CurvedTextMeshPro>(clip, TMP, state.TextColor, "Text");
             UIEAnimationColorUtils.SetAnimationClipTubeBloomPrePassLightColor(clip, state.GlowColor, "Image/Glow");
-            UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Image/Image0"), state.FillColors, "Image/Image0");
+
+
+            ImageView fill_imageView = bsa.gameObject.GetComponentOnChild<ImageView>("Image/Image0");
+
+            /*var swap = bsa.gameObject.GetComponent<ButtonSpriteSwap>();
+
+            Sprite _normal = swap.GetField<Sprite, ButtonSpriteSwap>("_normalStateSprite");
+            Sprite _hover = swap.GetField<Sprite, ButtonSpriteSwap>("_highlightStateSprite");
+
+            _normal = UIEAnimationColorUtils.MonochromifySprite(_normal);
+            _hover = UIEAnimationColorUtils.MonochromifySprite(_hover);
+
+            swap.SetField("_disabledStateSprite", _normal);
+            swap.SetField("_normalStateSprite", _normal);
+            swap.SetField("_highlightStateSprite", _hover);
+            //Unneeded?
+            swap.SetField("_pressedStateSprite", _hover);
+            
+*/
+
+            UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, fill_imageView, state.FillColors, "Image/Image0", setAlphaValues: true);
             UIEAnimationColorUtils.SetAnimationFromImageViewSettings(clip, bsa.gameObject.GetComponentOnChild<ImageView>("Image/ImageOverlay"), state.OverlayColors, "Image/ImageOverlay");
         }
 
@@ -380,7 +401,7 @@ namespace UIEngine.Managers
 
             var curvedTMP = bsa.gameObject.GetComponentOnChild<CurvedTextMeshPro>("Content/Text");
 
-            string textContent = curvedTMP.text;
+            string textContent = curvedTMP?.text ?? string.Empty;
 
             UnderlinedButton GetFromType(PluginConfig config, SpecialType specialtype)
             {

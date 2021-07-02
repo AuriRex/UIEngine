@@ -7,6 +7,7 @@ using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
 using UIEngine.Managers;
+using UIEngine.Utilities;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -70,6 +71,7 @@ namespace UIEngine.Configuration
                 PartyMode = BigMainMenuButton.FromSimpleColor(col);
                 CampaignMode = BigMainMenuButton.FromSimpleColor(col);
                 FallbackBigMenuButton = BigMainMenuButton.FromSimpleColor(col);
+                ModUnderlinedButtons = UnderlinedButton.FromSimpleColor(col);
                 FallbackUnderlinedButton = UnderlinedButton.FromSimpleColor(col);
             }
 
@@ -148,10 +150,9 @@ namespace UIEngine.Configuration
 
                 private PlayButton(Color col)
                 {
-                    NormalState = PlayButtonState.FromSimpleColor(col.SaturatedColor(0.8f));
+                    NormalState = PlayButtonState.FromSimpleColor(col.SaturatedColor(0.75f));
                     HighlightedState = PlayButtonState.FromSimpleColor(col.SaturatedColor(0.9f));
-                    //PressedState = PlayButtonState.FromSimpleColor(col);
-                    DisabledState = PlayButtonState.FromSimpleColor(Color.black.ColorWithAlpha(0.5f));
+                    DisabledState = PlayButtonState.FromSimpleColor(Color.black.ColorWithAlpha(0.25f));
                 }
 
                 internal static PlayButton FromSimpleColor(Color col)
@@ -210,8 +211,8 @@ namespace UIEngine.Configuration
 
                     private BigMainMenuButtonState(Color col)
                     {
-                        FillColors = ImageViewSettings.FromSimpleColor(col);
-                        OverlayColors = new ImageViewSettings();
+                        FillColors = ImageViewSettings.FromSimpleColor(Color.white.ColorWithAlpha(col.a));
+                        OverlayColors = ImageViewSettings.FromSimpleColor(col);
                         GlowColor = col;
                     }
 
@@ -226,7 +227,7 @@ namespace UIEngine.Configuration
                 private BigMainMenuButton(Color col)
                 {
                     NormalState = BigMainMenuButtonState.FromSimpleColor(col.SaturatedColor(.8f));
-                    HighlightedState = BigMainMenuButtonState.FromSimpleColor(col);
+                    HighlightedState = BigMainMenuButtonState.FromSimpleColor(col.ColorWithAlpha(0f));
                 }
 
                 internal static BigMainMenuButton FromSimpleColor(Color col)
@@ -262,7 +263,11 @@ namespace UIEngine.Configuration
                     public UnderlinedButtonState() { }
                     private UnderlinedButtonState(Color col)
                     {
-                        BackgroundColors = ImageViewSettings.FromSimpleColor(Color.gray.ColorWithAlpha(col.a));
+                        if(UIEAnimationColorUtils.IsLightColor(col))
+                        {
+                            TextColor = Color.black;
+                        }
+                        BackgroundColors = ImageViewSettings.FromSimpleColor(new Color(0.2f, 0.2f, 0.2f).ColorWithAlpha(col.a));
                         StrokeColors = ImageViewSettings.FromSimpleColor(Color.white.ColorWithAlpha(col.a));
                     }
                     public static UnderlinedButtonState FromSimpleColor(Color col)
@@ -334,9 +339,9 @@ namespace UIEngine.Configuration
                 private ToggleSetting(Color col)
                 {
                     OnColors = new ToggleState(col.SaturatedColor(.9f), null);
-                    OffColors = new ToggleState(Color.gray.SaturatedColor(.9f), null);
+                    OffColors = new ToggleState(Color.red.SaturatedColor(.7f), null);
                     OnHighlightedColors = new ToggleState(col, null);
-                    OffHighlightedColors = new ToggleState(Color.gray, null);
+                    OffHighlightedColors = new ToggleState(Color.red.SaturatedColor(.9f), null);
                     DisabledColors = new ToggleState(Color.gray, null, 0.25f);
                 }
 
@@ -403,10 +408,10 @@ namespace UIEngine.Configuration
                 public SegmentSetting() { }
                 public SegmentSetting(Color col)
                 {
-                    Normal = new SegmentState(col.SaturatedColor(.8f), null);
-                    Highlighted = new SegmentState(col, null);
-                    Selected = new SegmentState(col.SaturatedColor(.9f), Color.gray, 0.5f);
-                    SelectedAndHighlighted = new SegmentState(col, Color.gray, 0.5f);
+                    Normal = new SegmentState(Color.white, null);
+                    Highlighted = new SegmentState(col.SaturatedColor(.9f), Color.white);
+                    Selected = new SegmentState(col.SaturatedColor(.9f), Color.white, 0.32f);
+                    SelectedAndHighlighted = new SegmentState(col, Color.white, 0.35f);
                 }
 
                 public SegmentState Normal { get; set; } = new SegmentState(Color.white, null);

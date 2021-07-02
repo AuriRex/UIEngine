@@ -103,15 +103,17 @@ namespace UIEngine.Managers
 
         internal static void SetAnimationClipAnimations(AnimationClip clip, PluginConfig.Segments.SegmentState state, SegmentType segmentType)
         {
-            switch (segmentType)
+           /* switch (segmentType)
             {
                 case SegmentType.Text:
-                    UIEAnimationColorUtils.SetAnimationClipColor<CurvedTextMeshPro>(clip, state.BaseColor, "Text", "m_fontColor");
+                    
                     break;
                 case SegmentType.Icon:
-                    UIEAnimationColorUtils.SetAnimationClipColor<ImageView>(clip, state.BaseColor, "Icon", "m_Color");
+                    
                     break;
-            }
+            }*/
+            UIEAnimationColorUtils.SetAnimationClipColor<CurvedTextMeshPro>(clip, state.BaseColor, "Text", "m_fontColor");
+            UIEAnimationColorUtils.SetAnimationClipColor<ImageView>(clip, state.BaseColor, "Icon", "m_Color");
             UIEAnimationColorUtils.SetAnimationClipColor<ImageView>(clip, new Color(state.BackgroundColor.r, state.BackgroundColor.g, state.BackgroundColor.b, state.BackgroundAlpha), "BG", "m_Color", withAlpha: true);
 
         }

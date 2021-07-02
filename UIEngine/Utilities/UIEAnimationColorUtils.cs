@@ -1,5 +1,6 @@
 ﻿using HMUI;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UIEngine.Configuration;
 using UnityEngine;
@@ -46,6 +47,17 @@ namespace UIEngine.Utilities
             SetAnimationClipColor<TubeBloomPrePassLight>(clip, col, relativePath, "_color", withAlpha);
         }
 
+        public static bool IsLightColor(Color col)
+        {
+            int r = (int) (col.r * 255f);
+            int g = (int) (col.g * 255f);
+            int b = (int) (col.b * 255f);
+
+            int brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+            return brightness > 125;
+        }
+
         public static void SetDefaultAnimationsForClip(AnimationClip clip, (string relativePath, string property, float value, Type type)[] defaultAnimationData)
         {
             foreach ((string relativePath, string property, float value, Type type) animationData in defaultAnimationData)
@@ -81,7 +93,7 @@ namespace UIEngine.Utilities
                 clip.SetCurve(relativePath, typeof(T), "m_fontColor.a", AnimationCurve.Constant(0, 0, col.a));
         }
        
-        public static void SetAnimationFromImageViewSettings(AnimationClip clip, ImageView imageView, ImageViewSettings settings, string relativePath = "BG")
+        public static void SetAnimationFromImageViewSettings(AnimationClip clip, ImageView imageView, ImageViewSettings settings, string relativePath = "BG", bool setAlphaValues = false)
         {
             ImageView.GradientDirection? gradientDirection = GetGradientDirectionFromSettings(settings);
 
@@ -93,7 +105,8 @@ namespace UIEngine.Utilities
                 settings.GradientColor1,
                 imageView,
                 settings.FlipGradient,
-                gradientDirection);
+                gradientDirection,
+                setAlphaValues);
         }
 
         public static ImageView.GradientDirection? GetGradientDirectionFromSettings(ImageViewSettings settings)
@@ -110,35 +123,91 @@ namespace UIEngine.Utilities
             }
         }
 
-        public static void SetAnimationImageViewColors(ref AnimationClip clip, string relativePathOfGameObject = "BG", Color? baseColor = null, bool enabledGradient = false, Color? gradient0 = null, Color? gradient1 = null, ImageView imageView = null, bool flipGradientColors = false, ImageView.GradientDirection? gradientDirection = ImageView.GradientDirection.Vertical)
+        public static void SetAnimationImageViewColors(ref AnimationClip clip, string relativePathOfGameObject = "BG", Color? baseColor = null, bool enabledGradient = false, Color? gradient0 = null, Color? gradient1 = null, ImageView imageView = null, bool flipGradientColors = false, ImageView.GradientDirection? gradientDirection = ImageView.GradientDirection.Vertical, bool setAlphaValues = false)
         {
             if (!baseColor.HasValue) baseColor = Color.white;
 
             clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_gradient", AnimationCurve.Constant(0, 0, enabledGradient ? 1 : 0));
             clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_flipGradientColors", AnimationCurve.Constant(0, 0, flipGradientColors ? 1 : 0));
+
             if(gradientDirection.HasValue)
                 clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_gradientDirection", AnimationCurve.Constant(0, 0, (int) gradientDirection.Value));
 
-            if (enabledGradient)
+            if (gradient0.HasValue)
             {
-                if(gradient0.HasValue)
-                {
-                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color0.r", AnimationCurve.Constant(0, 0, gradient0.Value.r));
-                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color0.g", AnimationCurve.Constant(0, 0, gradient0.Value.g));
-                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color0.b", AnimationCurve.Constant(0, 0, gradient0.Value.b));
-                }
-                if (gradient1.HasValue)
-                {
-                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color1.r", AnimationCurve.Constant(0, 0, gradient1.Value.r));
-                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color1.g", AnimationCurve.Constant(0, 0, gradient1.Value.g));
-                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color1.b", AnimationCurve.Constant(0, 0, gradient1.Value.b));
-                }
+                clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color0.r", AnimationCurve.Constant(0, 0, gradient0.Value.r));
+                clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color0.g", AnimationCurve.Constant(0, 0, gradient0.Value.g));
+                clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color0.b", AnimationCurve.Constant(0, 0, gradient0.Value.b));
+                if(setAlphaValues)
+                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color0.a", AnimationCurve.Constant(0, 0, gradient0.Value.a));
+            }
+
+            if (gradient1.HasValue)
+            {
+                clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color1.r", AnimationCurve.Constant(0, 0, gradient1.Value.r));
+                clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color1.g", AnimationCurve.Constant(0, 0, gradient1.Value.g));
+                clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color1.b", AnimationCurve.Constant(0, 0, gradient1.Value.b));
+                if (setAlphaValues)
+                    clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "_color1.a", AnimationCurve.Constant(0, 0, gradient1.Value.a));
             }
 
             clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "m_Color.r", AnimationCurve.Constant(0, 0, baseColor.Value.r));
             clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "m_Color.g", AnimationCurve.Constant(0, 0, baseColor.Value.g));
             clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "m_Color.b", AnimationCurve.Constant(0, 0, baseColor.Value.b));
+            if (setAlphaValues)
+                clip.SetCurve(relativePathOfGameObject, typeof(ImageView), "m_Color.a", AnimationCurve.Constant(0, 0, baseColor.Value.a));
         }
 
+        private static Dictionary<Texture2D, Texture2D> _readableTexturesCache = new Dictionary<Texture2D, Texture2D>();
+        private static Dictionary<Texture2D, Texture2D> _monochromeTexturesCache = new Dictionary<Texture2D, Texture2D>();
+        public static Sprite MonochromifySprite(Sprite original)
+        {
+            Texture2D modifyableTexture;
+
+            if(!_readableTexturesCache.TryGetValue(original.texture, out modifyableTexture))
+            {
+                RenderTexture out_renderTexture = new RenderTexture(original.texture.width, original.texture.height, 0);
+                out_renderTexture.enableRandomWrite = true;
+                RenderTexture previousActiveRT = RenderTexture.active;
+                RenderTexture.active = out_renderTexture;
+                // Copy your texture ref to the render texture
+                Graphics.Blit(original.texture, out_renderTexture);
+
+                Texture2D newTexture = new Texture2D(original.texture.width, original.texture.height, TextureFormat.RGBA32, false);
+                newTexture.ReadPixels(new Rect(0, 0, original.texture.width, original.texture.height), 0, 0, false);
+
+                newTexture.Apply();
+
+                modifyableTexture = newTexture;
+                _readableTexturesCache.Add(original.texture, newTexture);
+                RenderTexture.active = previousActiveRT;
+            }
+
+
+
+            Texture2D monochromeTexture;
+
+            if(!_monochromeTexturesCache.TryGetValue(modifyableTexture, out monochromeTexture))
+            {
+
+                monochromeTexture = new Texture2D(modifyableTexture.width, modifyableTexture.height, modifyableTexture.format, mipChain: false);
+                var pixels = modifyableTexture.GetPixels();
+
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    Color oldColor = pixels[i];
+                    float gsv = oldColor.grayscale;
+                    float alpha = oldColor.a;
+                    pixels[i] = new Color(gsv, gsv, gsv, alpha);
+                }
+
+                monochromeTexture.SetPixels(pixels);
+                monochromeTexture.Apply();
+
+                _monochromeTexturesCache.Add(modifyableTexture, monochromeTexture);
+            }
+
+            return Sprite.Create(monochromeTexture, original.rect, original.pivot, original.pixelsPerUnit, 0, SpriteMeshType.Tight, original.border);
+        }
     }
 }
