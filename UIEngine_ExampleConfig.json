@@ -1,0 +1,690 @@
+{
+  "Enabled": true,
+  "ShowIntroduction": true,
+  "UnicornPuke": true,
+  "SimplePrimaryColor": "#851FFF",
+  "Advanced": true,
+  "ButtonSettings": {
+    "Enable": true,
+    "CustomPlayButtons": [
+      {
+        "TargetMatchingMode": "ElementText",
+        "TargetString": "?",
+        "Enable": false,
+        "NormalState": {
+          "TextColor": "#FFFFFF",
+          "ShineColor": "#00FF00",
+          "RadialGlowColor": "#000000",
+          "BackgroundColors": {
+            "BaseColor": "#5F2791",
+            "GradientDirection": "Horizontal",
+            "FlipGradient": false,
+            "GradientColor0": "#1D1326",
+            "GradientColor1": "#9D2EFF"
+          },
+          "BorderColors": {
+            "BaseColor": "#FFC53D",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          },
+          "OutlineColors": {
+            "BaseColor": "#CB8FFF",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          }
+        },
+        "HighlightedState": {
+          "TextColor": "#1A0017",
+          "ShineColor": "#661FFF",
+          "RadialGlowColor": "#FFFFFF",
+          "BackgroundColors": {
+            "BaseColor": "#FFCD57",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          },
+          "BorderColors": {
+            "BaseColor": "#D69600",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          },
+          "OutlineColors": {
+            "BaseColor": "#FFEDC2",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          }
+        },
+        "DisabledState": {
+          "TextColor": "#FFFFFF",
+          "ShineColor": "#FFFFFF",
+          "RadialGlowColor": "#FFFFFF",
+          "BackgroundColors": {
+            "BaseColor": "#2C2C2C",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          },
+          "BorderColors": {
+            "BaseColor": "#2C2C2C",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          },
+          "OutlineColors": {
+            "BaseColor": "#2C2C2C",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          }
+        }
+      }
+    ],
+    "PlayButtonSettings": {
+      "Enable": false,
+      "NormalState": {
+        "TextColor": "#FFFFFF",
+        "ShineColor": "#FFFFFF",
+        "RadialGlowColor": "#FF0000",
+        "BackgroundColors": {
+          "BaseColor": "#5F2791",
+          "GradientDirection": "Horizontal",
+          "FlipGradient": false,
+          "GradientColor0": "#1D1326",
+          "GradientColor1": "#9D2EFF"
+        },
+        "BorderColors": {
+          "BaseColor": "#0E001A",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "OutlineColors": {
+          "BaseColor": "#CB8FFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#FFC338",
+        "ShineColor": "#2B0326",
+        "RadialGlowColor": "#FF00FF",
+        "BackgroundColors": {
+          "BaseColor": "#C895F4",
+          "GradientDirection": "Horizontal",
+          "FlipGradient": true,
+          "GradientColor0": "#321D44",
+          "GradientColor1": "#7200D6"
+        },
+        "BorderColors": {
+          "BaseColor": "#FFCB2E",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "OutlineColors": {
+          "BaseColor": "#F4DF9F",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "DisabledState": {
+        "TextColor": "#C70000",
+        "ShineColor": "#FFFFFF",
+        "RadialGlowColor": "#FFFFFF",
+        "BackgroundColors": {
+          "BaseColor": "#724B4B",
+          "GradientDirection": "Vertical",
+          "FlipGradient": false,
+          "GradientColor0": "#1A0000",
+          "GradientColor1": "#120D0D"
+        },
+        "BorderColors": {
+          "BaseColor": "#380000",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "OutlineColors": {
+          "BaseColor": "#352121",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    },
+    "CustomBigMainMenuButtons": [],
+    "SoloMode": {
+      "NormalState": {
+        "TextColor": "#FF0000",
+        "GlowColor": "#FF0000",
+        "OverlayColors": {
+          "BaseColor": "#FF0000",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#00FF00",
+        "GlowColor": "#00FF00",
+        "OverlayColors": {
+          "BaseColor": "#00FF00",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FF0000",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    },
+    "OnlineMode": {
+      "NormalState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#7700CC",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "Vertical",
+          "FlipGradient": false,
+          "GradientColor0": "#FF0000",
+          "GradientColor1": "#0000FF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#7700CC",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "Vertical",
+          "FlipGradient": false,
+          "GradientColor0": "#FF0000",
+          "GradientColor1": "#0000FF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    },
+    "PartyMode": {
+      "NormalState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#FFFFFF",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#FFFFFF",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    },
+    "CampaignMode": {
+      "NormalState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#FFFFFF",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#FFFFFF",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    },
+    "FallbackBigMenuButton": {
+      "NormalState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#FFFFFF",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#FFFFFF",
+        "GlowColor": "#FFFFFF",
+        "OverlayColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "FillColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    },
+    "CustomUnderlinedButtons": [
+      {
+        "TargetMatchingMode": "ElementText",
+        "TargetString": "TournamentAssistant",
+        "NormalState": {
+          "TextColor": "#FF0000",
+          "BackgroundColors": {
+            "BaseColor": "#FFFFFF",
+            "GradientDirection": "Horizontal",
+            "FlipGradient": false,
+            "GradientColor0": "#00FF00",
+            "GradientColor1": "#0000FF"
+          },
+          "StrokeColors": {
+            "BaseColor": "#FFFFFF",
+            "GradientDirection": "Horizontal",
+            "FlipGradient": false,
+            "GradientColor0": "#FF0000",
+            "GradientColor1": "#FFFF00"
+          }
+        },
+        "HighlightedState": {
+          "TextColor": "#000000",
+          "BackgroundColors": {
+            "BaseColor": "#00FF00",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          },
+          "StrokeColors": {
+            "BaseColor": "#FFFFFF",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          }
+        },
+        "DisabledState": {
+          "TextColor": "#FFFFFF",
+          "BackgroundColors": {
+            "BaseColor": "#FFFFFF",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          },
+          "StrokeColors": {
+            "BaseColor": "#FFFFFF",
+            "GradientDirection": "None",
+            "FlipGradient": false,
+            "GradientColor0": "#FFFFFF",
+            "GradientColor1": "#FFFFFF"
+          }
+        }
+      }
+    ],
+    "ModUnderlinedButtons": {
+      "NormalState": {
+        "TextColor": "#FFFFFF",
+        "BackgroundColors": {
+          "BaseColor": "#342323",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "StrokeColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#FFFFFF",
+        "BackgroundColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "StrokeColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "DisabledState": {
+        "TextColor": "#FFFFFF",
+        "BackgroundColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "StrokeColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    },
+    "FallbackUnderlinedButton": {
+      "NormalState": {
+        "TextColor": "#FFFFFF",
+        "BackgroundColors": {
+          "BaseColor": "#211E24",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "StrokeColors": {
+          "BaseColor": "#8D0AFF",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "HighlightedState": {
+        "TextColor": "#FF990A",
+        "BackgroundColors": {
+          "BaseColor": "#FFFFFF",
+          "GradientDirection": "Vertical",
+          "FlipGradient": false,
+          "GradientColor0": "#25142F",
+          "GradientColor1": "#7A5400"
+        },
+        "StrokeColors": {
+          "BaseColor": "#CD74F6",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      },
+      "DisabledState": {
+        "TextColor": "#4F4F4F",
+        "BackgroundColors": {
+          "BaseColor": "#000000",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        },
+        "StrokeColors": {
+          "BaseColor": "#11001A",
+          "GradientDirection": "None",
+          "FlipGradient": false,
+          "GradientColor0": "#FFFFFF",
+          "GradientColor1": "#FFFFFF"
+        }
+      }
+    }
+  },
+  "ToggleSettings": {
+    "Enable": true,
+    "CustomToggleSettings": [
+      {
+        "TargetMatchingMode": "ElementText",
+        "TargetString": "Enable",
+        "OnColors": {
+          "KnobColor": "#3369CC",
+          "BackgroundColor": "#000000",
+          "BackgroundAlpha": 0.5
+        },
+        "OffColors": {
+          "KnobColor": "#CA8C2F",
+          "BackgroundColor": "#000000",
+          "BackgroundAlpha": 0.5
+        },
+        "OnHighlightedColors": {
+          "KnobColor": "#87B0FD",
+          "BackgroundColor": "#000000",
+          "BackgroundAlpha": 0.5
+        },
+        "OffHighlightedColors": {
+          "KnobColor": "#F0BB6A",
+          "BackgroundColor": "#000000",
+          "BackgroundAlpha": 0.5
+        },
+        "DisabledColors": {
+          "KnobColor": "#808080",
+          "BackgroundColor": "#000000",
+          "BackgroundAlpha": 0.25
+        }
+      }
+    ],
+    "ToggleSettings": {
+      "OnColors": {
+        "KnobColor": "#339933",
+        "BackgroundColor": "#000000",
+        "BackgroundAlpha": 0.5
+      },
+      "OffColors": {
+        "KnobColor": "#993333",
+        "BackgroundColor": "#000000",
+        "BackgroundAlpha": 0.5
+      },
+      "OnHighlightedColors": {
+        "KnobColor": "#1AFF1A",
+        "BackgroundColor": "#808080",
+        "BackgroundAlpha": 0.5
+      },
+      "OffHighlightedColors": {
+        "KnobColor": "#FF1A1A",
+        "BackgroundColor": "#808080",
+        "BackgroundAlpha": 0.5
+      },
+      "DisabledColors": {
+        "KnobColor": "#808080",
+        "BackgroundColor": "#000000",
+        "BackgroundAlpha": 0.25
+      }
+    }
+  },
+  "SegmentSettings": {
+    "Enable": true,
+    "CustomSegmentSettings": [
+      {
+        "TargetString": "",
+        "Normal": {
+          "BaseColor": "#FFFFFF",
+          "BackgroundColor": "#000000",
+          "BackgroundAlpha": 0.3
+        },
+        "Highlighted": {
+          "BaseColor": "#7F1FF4",
+          "BackgroundColor": "#FFFFFF",
+          "BackgroundAlpha": 0.3
+        },
+        "Selected": {
+          "BaseColor": "#7F1FF4",
+          "BackgroundColor": "#FFFFFF",
+          "BackgroundAlpha": 0.32
+        },
+        "SelectedAndHighlighted": {
+          "BaseColor": "#AE70FB",
+          "BackgroundColor": "#FFFFFF",
+          "BackgroundAlpha": 0.35
+        }
+      }
+    ],
+    "SegmentSettings": {
+      "Normal": {
+        "BaseColor": "#FFFFFF",
+        "BackgroundColor": "#000000",
+        "BackgroundAlpha": 0.3
+      },
+      "Highlighted": {
+        "BaseColor": "#7F1FF4",
+        "BackgroundColor": "#FFFFFF",
+        "BackgroundAlpha": 0.3
+      },
+      "Selected": {
+        "BaseColor": "#7F1FF4",
+        "BackgroundColor": "#FFFFFF",
+        "BackgroundAlpha": 0.32
+      },
+      "SelectedAndHighlighted": {
+        "BaseColor": "#AE70FB",
+        "BackgroundColor": "#FFFFFF",
+        "BackgroundAlpha": 0.35
+      }
+    }
+  },
+  "DecorationExclusions": {
+    "Enabled": true,
+    "FilterRules": [
+      {
+        "TargetButtonType": "Underlined",
+        "TargetMatchingMode": "ParentGameObject",
+        "TargetString": "SongBrowserViewController",
+        "Exclusions": [
+          {
+            "ExclusionType": "ChildGameObject",
+            "ExclusionTarget": "Underline"
+          }
+        ]
+      },
+      {
+        "TargetButtonType": "Underlined",
+        "TargetMatchingMode": "GameObject",
+        "TargetString": "randomButton_hoverHintText",
+        "Exclusions": [
+          {
+            "ExclusionType": "ChildGameObject",
+            "ExclusionTarget": "BG"
+          }
+        ]
+      },
+      {
+        "TargetButtonType": "Underlined",
+        "TargetMatchingMode": "GameObject",
+        "TargetString": "playlistExportButton_hoverHintText",
+        "Exclusions": [
+          {
+            "ExclusionType": "ChildGameObject",
+            "ExclusionTarget": "BG"
+          }
+        ]
+      },
+      {
+        "TargetButtonType": "Underlined",
+        "TargetMatchingMode": "GameObject",
+        "TargetString": "ClearSortAndFilterButton_hoverHintText",
+        "Exclusions": [
+          {
+            "ExclusionType": "ChildGameObject",
+            "ExclusionTarget": "BG"
+          }
+        ]
+      }
+    ]
+  }
+}
