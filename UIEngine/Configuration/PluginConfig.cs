@@ -15,7 +15,11 @@ namespace UIEngine.Configuration
 {
     public class PluginConfig
     {
-        public virtual bool Enabled { get; set; } = true;
+        public virtual bool Enabled { get; set; } = false;
+
+        public virtual bool ShowIntroduction { get; set; } = true;
+
+        public virtual bool UnicornPuke { get; set; } = false;
 
         [UseConverter(typeof(HexColorConverter))]
         public virtual Color SimplePrimaryColor { get; set; } = new Color(.52f, .12f, 1f);
@@ -135,6 +139,12 @@ namespace UIEngine.Configuration
 
                     private PlayButtonState(Color col)
                     {
+                        if (UIEAnimationColorUtils.IsLightColor(col))
+                        {
+                            TextColor = Color.black;
+                            ShineColor = Color.gray;
+                            RadialGlowColor = Color.gray;
+                        }
                         BackgroundColors = ImageViewSettings.FromSimpleColor(col);
                         BorderColors = ImageViewSettings.FromSimpleColor(col.SaturatedColor(0.7f));
                         OutlineColors = ImageViewSettings.FromSimpleColor(col);
@@ -263,10 +273,10 @@ namespace UIEngine.Configuration
                     public UnderlinedButtonState() { }
                     private UnderlinedButtonState(Color col)
                     {
-                        if(UIEAnimationColorUtils.IsLightColor(col))
+                        /*if(UIEAnimationColorUtils.IsLightColor(col))
                         {
                             TextColor = Color.black;
-                        }
+                        }*/
                         BackgroundColors = ImageViewSettings.FromSimpleColor(new Color(0.2f, 0.2f, 0.2f).ColorWithAlpha(col.a));
                         StrokeColors = ImageViewSettings.FromSimpleColor(Color.white.ColorWithAlpha(col.a));
                     }
@@ -694,6 +704,8 @@ namespace UIEngine.Configuration
             public const string TARGET_MODE_TEXT_CONTENT = "ElementText";
             public const string TARGET_MODE_PARENT_GAMEOBJECT_NAME = "ParentGameObject";
         }
+
+        public virtual void CopyFrom(PluginConfig _) { }
 
     }
 }

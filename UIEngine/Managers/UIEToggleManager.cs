@@ -20,7 +20,9 @@ namespace UIEngine.Managers
 
         public override bool ShouldDecorateElement(AnimatedSwitchView element)
         {
-            return pluginConfig.ToggleSettings.Enable;
+            if (pluginConfig.Enabled && pluginConfig.Advanced)
+                return pluginConfig.ToggleSettings.Enable;
+            return pluginConfig.Enabled;
         }
 
         public override void DecorateElement(AnimatedSwitchView element)

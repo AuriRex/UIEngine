@@ -12,6 +12,11 @@ namespace UIEngine.Utilities
     {
         private static PluginConfig _simpleColorConfig;
 
+        internal static void SetSimpleColorConfig(PluginConfig config)
+        {
+            _simpleColorConfig = config;
+        }
+
         internal static PluginConfig GetSimpleColorConfig(Color col, bool forceRegenerate = false)
         {
             if(_simpleColorConfig == null || forceRegenerate)
@@ -74,6 +79,15 @@ namespace UIEngine.Utilities
             clip.SetCurve(relativePath, typeof(T), $"{attribute}.b", AnimationCurve.Constant(0, 0, col.b));
             if (withAlpha)
                 clip.SetCurve(relativePath, typeof(T), $"{attribute}.a", AnimationCurve.Constant(0, 0, col.a));
+        }
+
+        public static void SetAnimationClipColor(AnimationClip clip, Type type, Color col, string relativePath, string attribute = "m_Color", bool withAlpha = false)
+        {
+            clip.SetCurve(relativePath, type, $"{attribute}.r", AnimationCurve.Constant(0, 0, col.r));
+            clip.SetCurve(relativePath, type, $"{attribute}.g", AnimationCurve.Constant(0, 0, col.g));
+            clip.SetCurve(relativePath, type, $"{attribute}.b", AnimationCurve.Constant(0, 0, col.b));
+            if (withAlpha)
+                clip.SetCurve(relativePath, type, $"{attribute}.a", AnimationCurve.Constant(0, 0, col.a));
         }
 
         public static void SetTextColor(CurvedTextMeshPro tmp, Color? color)
@@ -160,6 +174,7 @@ namespace UIEngine.Utilities
 
         private static Dictionary<Texture2D, Texture2D> _readableTexturesCache = new Dictionary<Texture2D, Texture2D>();
         private static Dictionary<Texture2D, Texture2D> _monochromeTexturesCache = new Dictionary<Texture2D, Texture2D>();
+        [Obsolete("Is kind of broken")]
         public static Sprite MonochromifySprite(Sprite original)
         {
             Texture2D modifyableTexture;

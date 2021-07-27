@@ -17,7 +17,9 @@ namespace UIEngine.Managers
 
         public override bool ShouldDecorateElement(SelectableCellStaticAnimations element)
         {
-            return pluginConfig.SegmentSettings.Enable;
+            if(pluginConfig.Enabled && pluginConfig.Advanced)
+                return pluginConfig.SegmentSettings.Enable;
+            return pluginConfig.Enabled;
         }
 
         public override void DecorateElement(SelectableCellStaticAnimations element)

@@ -136,6 +136,7 @@
     <Compile Include="AnimationData\PlayButton.cs" />
     <Compile Include="AnimationData\TextMenuButton.cs" />
     <Compile Include="Components\ButtonMaterialPropertyChanger.cs" />
+    <Compile Include="Components\UnicornPuke.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ImageViewExtensions.cs" />
     <Compile Include="Extensions\SSFTToupleArray.cs" />
@@ -145,7 +146,14 @@
     <Compile Include="HarmonyPatches\SelectableCellStaticAnimationsPatch.cs" />
     <Compile Include="HarmonyPatches\TitleViewControllerPatch.cs" />
     <Compile Include="Installers\UIECoreInstaller.cs" />
+    <Compile Include="Installers\UIEMenuInstaller.cs" />
+    <Compile Include="Managers\MenuButtonManager.cs" />
     <Compile Include="Managers\UIEButtonManager.cs" />
+    <Compile Include="Managers\UIETitleBarManager.cs" />
+    <Compile Include="UI\UIEFlowCoordinator.cs" />
+    <Compile Include="UI\UIEInitialSetupViewController.cs" />
+    <Compile Include="UI\UIEMainViewController.cs" />
+    <Compile Include="UI\UIEPreviewViewController.cs" />
     <Compile Include="Utilities\UIEAnimationColorUtils.cs" />
     <Compile Include="Managers\UIEElementManagerBase.cs" />
     <Compile Include="Managers\UIESegmentManager.cs" />
@@ -162,6 +170,9 @@
   <ItemGroup>
     <None Include="BuildTargets.targets" />
     <None Include=".gitignore" />
+    <EmbeddedResource Include="UI\Views\mainView.bsml" />
+    <EmbeddedResource Include="UI\Views\setupView.bsml" />
+    <EmbeddedResource Include="UI\Views\previewView.bsml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using HMUI;
+using UIEngine.Components;
 using UIEngine.Managers;
 using UnityEngine;
 
@@ -15,6 +16,10 @@ namespace UIEngine.HarmonyPatches
             GameObject bg = __instance.gameObject.transform.Find("BG")?.gameObject;
 
             ImageView iv = bg?.GetComponent<ImageView>();
+
+            UIETitleBarManager.AddElement(__instance);
+
+
 
             // TODO reimplement
 

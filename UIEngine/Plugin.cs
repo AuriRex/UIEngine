@@ -26,6 +26,7 @@ namespace UIEngine
             _config = conf.Generated<Configuration.PluginConfig>();
 
             zenjector.OnApp<UIECoreInstaller>().WithParameters(_config);
+            zenjector.OnMenu<UIEMenuInstaller>();
         }
 
         [OnStart]

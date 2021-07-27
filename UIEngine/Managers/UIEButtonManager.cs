@@ -32,7 +32,45 @@ namespace UIEngine.Managers
 
         public override bool ShouldDecorateElement(ButtonStaticAnimations element)
         {
-            return pluginConfig.ButtonSettings.Enable;
+            if (pluginConfig.Enabled && pluginConfig.Advanced)
+                return pluginConfig.ButtonSettings.Enable;
+
+            #region  mightRemoveLaterJank
+            ButtonType bType;
+            SpecialType sType;
+
+            if (_buttonTypeDictionary.TryGetValue(element, out (ButtonType, SpecialType) types))
+            {
+                bType = types.Item1;
+                sType = types.Item2;
+            }
+            else
+            {
+                bType = GetButtonType(element);
+                sType = GetSpecialType(element, bType);
+                _buttonTypeDictionary.Add(element, (bType, sType));
+            }
+
+            Assembly assembly = null;
+
+            if (sType == SpecialType.ModUnderline && !_assemblyForModButtons.TryGetValue(element, out assembly))
+            {
+                assembly = GetAssemblyForButton(element, bType);
+
+                if (assembly != null && !_assemblyForModButtons.ContainsKey(element))
+                {
+                    _assemblyForModButtons.Add(element, assembly);
+                }
+            }
+
+            if (assembly == Assembly.GetExecutingAssembly())
+            {
+                // our button
+                return true;
+            }
+            #endregion  mightRemoveLaterJank
+
+            return pluginConfig.Enabled;
         }
 
         public override void DecorateElement(ButtonStaticAnimations element)
@@ -65,6 +103,16 @@ namespace UIEngine.Managers
                 {
                     _assemblyForModButtons.Add(element, assembly);
                 }
+            }
+
+            if(assembly == Assembly.GetExecutingAssembly())
+            {
+                // our button
+                UnicornPuke unicornPuke = element.gameObject.AddComponent<UnicornPuke>();
+
+                unicornPuke.Init(pluginConfig, new List<(string relativePath, string property, Type animationTargetType)>() {
+                    ("Underline", "color", typeof(ImageView))
+                });
             }
 
             ref AnimationClip clipNormal = ref ButtonStaticAnimations_normalClip(ref element);

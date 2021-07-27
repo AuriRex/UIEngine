@@ -19,7 +19,7 @@ namespace UIEngine.Installers
             Container.BindInterfacesAndSelfTo<UIEButtonManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIEToggleManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIESegmentManager>().AsSingle();
-            // TODO I swear I'm gonna do something with this eventually xp
+            Container.BindInterfacesAndSelfTo<UIETitleBarManager>().AsSingle();
         }
     }
 }

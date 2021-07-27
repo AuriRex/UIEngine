@@ -1,0 +1,30 @@
+﻿<background horizontal-fit='PreferredSize' vertical-fit='PreferredSize' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize'>
+    <horizontal pref-height='20' preferred-width='80' size-delta-y='20'>
+      <background background='round-rect-panel' background-color='purple'>
+        <vertical>
+          <text align='Center' text='Welcome to UIEngines settings menu!' rich-text='true' />
+          <text align='Center' text='To get started please choose a starting color.' rich-text='true' />
+        </vertical>
+      </background>
+    </horizontal>
+    <horizontal pref-height='20' preferred-width='80' size-delta-y='20'>
+      <background background='round-rect-panel' background-color='magenta'>
+        <horizontal pref-height='20' preferred-width='80' pad-left='10' pad-right='10'>
+          <color-setting text='Starting color' overflow-mode='Overflow' value='simple-color' apply-on-change='true' />
+        </horizontal>
+      </background>
+    </horizontal>
+    <horizontal pref-height='20' preferred-width='80' size-delta-y='20' >
+      <background horizontal-fit='PreferredSize' vertical-fit='PreferredSize' >
+        <vertical pref-height='20' preferred-width='80' child-align='MiddleCenter' >
+          <action-button text='~continue-text' on-click='on-continue-clicked' />
+        </vertical>
+      </background>
+    </horizontal>
+    <!--<horizontal pref-height='20' preferred-width='80'>
+      <action-button text='Simple' hover-hint='One click primary color change!' />
+      <action-button text='Advanced' hover-hint='Total control over colors!' />
+    </horizontal>-->
+  </vertical>
+</background>

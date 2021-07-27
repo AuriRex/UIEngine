@@ -45,6 +45,13 @@ namespace UIEngine.Extensions
             return child?.GetComponent<T>();
         }
 
+        public static Component GetComponentOnChild(this GameObject go, string name, Type type)
+        {
+            GameObject child = go.GetChildByName(name);
+
+            return child?.GetComponent(type);
+        }
+
         public static T GetOrAddComponent<T>(this GameObject go) where T : Component
         {
             var component = go.GetComponent<T>();

@@ -1,0 +1,12 @@
+﻿<horizontal horizontal-fit='PreferredSize' vertical-fit='PreferredSize' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+
+  <vertical id='container'>
+    <toggle-setting id='preview-toggle' text='Preview' />
+    <action-button id='preview-action' text='Preview' />
+    <button id='preview-button' text='Preview' />
+    <tab-selector tab-tag='preview' />
+    <tab tags='preview' tab-name='Preview' ></tab>
+    <tab tags='preview' tab-name='Preview' ></tab>
+  </vertical>
+
+</horizontal>
