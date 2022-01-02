@@ -7,26 +7,6 @@ namespace UIEngine.Managers
 {
     public abstract class UIEElementManagerBase<TElement> : IDisposable where TElement : MonoBehaviour
     {
-        private static UIEElementManagerBase<TElement> _instance;
-        internal static UIEElementManagerBase<TElement> Instance
-        {
-            get
-            {
-                if (_instance == null) throw new Exception();
-                return _instance;
-            }
-            private set
-            {
-                _instance = value;
-            }
-        }
-        public static bool IsConstructed
-        {
-            get
-            {
-                return _instance != null;
-            }
-        }
 
         protected PluginConfig pluginConfig;
 
@@ -37,37 +17,34 @@ namespace UIEngine.Managers
             this.pluginConfig = pluginConfig;
 
             elementSet = new HashSet<TElement>();
-
-            _instance = this;
         }
 
         public void Dispose()
         {
-            _instance = null;
+            
         }
 
         public abstract bool ShouldDecorateElement(TElement element);
 
         public abstract void DecorateElement(TElement element);
 
-        internal static void AddElement(TElement element)
+        internal void AddElement(TElement element)
         {
-            if (!Instance.ShouldDecorateElement(element)) return;
+            if (!ShouldDecorateElement(element)) return;
             if (element == null) return;
 
-            if (!Instance.elementSet.Contains(element))
+            if (!elementSet.Contains(element))
             {
-                Instance.elementSet.Add(element);
+                elementSet.Add(element);
                 try
                 {
-                    Instance.DecorateElement(element);
+                    DecorateElement(element);
                 }
                 catch(Exception ex)
                 {
                     Logger.log.Error($"Failed decorating UI element \"{element.name}\": {ex.Message}");
                     Logger.log.Error($"{ex.StackTrace}");
                 }
-                
             }
             else
             {

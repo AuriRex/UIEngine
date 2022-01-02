@@ -1,4 +1,5 @@
 ﻿using UIEngine.Configuration;
+using UIEngine.HarmonyPatches;
 using UIEngine.Managers;
 using Zenject;
 
@@ -20,6 +21,12 @@ namespace UIEngine.Installers
             Container.BindInterfacesAndSelfTo<UIEToggleManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIESegmentManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIETitleBarManager>().AsSingle();
+
+            Container.BindInterfacesTo<AnimatedSwitchViewPatch>().AsSingle();
+            Container.BindInterfacesTo<ButtonStaticAnimationsPatch>().AsSingle();
+            Container.BindInterfacesTo<LevelListTableCellPatch>().AsSingle();
+            Container.BindInterfacesTo<SelectableCellStaticAnimationsPatch>().AsSingle();
+            Container.BindInterfacesTo<TitleViewControllerPatch>().AsSingle();
         }
     }
 }

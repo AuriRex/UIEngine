@@ -1,27 +1,37 @@
-﻿using HarmonyLib;
-using HMUI;
+﻿using HMUI;
+using SiraUtil.Affinity;
+using UIEngine.Configuration;
 using UIEngine.Managers;
 
 namespace UIEngine.HarmonyPatches
 {
-    [HarmonyPatch(typeof(ButtonStaticAnimations))]
-	[HarmonyPatch(nameof(ButtonStaticAnimations.Awake), MethodType.Normal)]
-	internal class ButtonStaticAnimationsPatch
+    internal class ButtonStaticAnimationsPatch : IAffinity
 	{
 		public const string BSMLBUTTON_CLONE_NAME = "PracticeButton(Clone)";
 
-		static void Prefix(ref ButtonStaticAnimations __instance)
+		private readonly PluginConfig _pluginConfig;
+		private readonly UIEButtonManager _buttonManager;
+
+		public ButtonStaticAnimationsPatch(PluginConfig pluginConfig, UIEButtonManager buttonManager)
+        {
+			_pluginConfig = pluginConfig;
+			_buttonManager = buttonManager;
+		}
+
+		[AffinityPrefix]
+		[AffinityPatch(typeof(ButtonStaticAnimations), nameof(ButtonStaticAnimations.Awake))]
+		internal void Prefix(ref ButtonStaticAnimations __instance)
 		{
 			ButtonStaticAnimations bsa = __instance;
 
 			if(bsa.name.Equals(BSMLBUTTON_CLONE_NAME))
             {
 				// Let mod menu buttons initialize first
-				__instance.StartCoroutine(Utilities.Utilities.DoAfter(0.1f, () => UIEButtonManager.AddElement(bsa)));
+				__instance.StartCoroutine(Utilities.Utilities.DoAfter(0.1f, () => _buttonManager.AddElement(bsa)));
 			}
 			else
             {
-				UIEButtonManager.AddElement(bsa);
+				_buttonManager.AddElement(bsa);
 			}
 
 		}

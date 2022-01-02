@@ -1,16 +1,26 @@
-﻿using HarmonyLib;
-using HMUI;
+﻿using HMUI;
+using SiraUtil.Affinity;
+using UIEngine.Configuration;
 using UIEngine.Managers;
 
 namespace UIEngine.HarmonyPatches
 {
-    [HarmonyPatch(typeof(SelectableCellStaticAnimations))]
-    [HarmonyPatch(nameof(SelectableCellStaticAnimations.Awake), MethodType.Normal)]
-    internal class SelectableCellStaticAnimationsPatch
+    internal class SelectableCellStaticAnimationsPatch : IAffinity
     {
-		static void Postfix(ref SelectableCellStaticAnimations __instance)
+        private readonly PluginConfig _pluginConfig;
+        private readonly UIESegmentManager _segmentManager;
+
+        public SelectableCellStaticAnimationsPatch(PluginConfig pluginConfig, UIESegmentManager segmentManager)
         {
-			UIESegmentManager.AddElement(__instance);
+            _pluginConfig = pluginConfig;
+            _segmentManager = segmentManager;
+        }
+
+        [AffinityPostfix]
+        [AffinityPatch(typeof(SelectableCellStaticAnimations), nameof(SelectableCellStaticAnimations.Awake))]
+        internal void Postfix(ref SelectableCellStaticAnimations __instance)
+        {
+            _segmentManager.AddElement(__instance);
 		}
 	}
 }

@@ -28,8 +28,6 @@ namespace UIEngine.Managers
             _menuButton = new MenuButton("UIEngine", "Colorful", PresentFlowCoordinator);
         }
 
-        
-
         public void Initialize()
         {
             MenuButtons.instance.RegisterButton(_menuButton);

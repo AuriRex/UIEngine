@@ -1,30 +1,30 @@
-﻿using HarmonyLib;
-using HMUI;
-using UIEngine.Components;
+﻿using HMUI;
+using SiraUtil.Affinity;
+using UIEngine.Configuration;
 using UIEngine.Managers;
-using UnityEngine;
 
 namespace UIEngine.HarmonyPatches
 {
-    [HarmonyPatch(typeof(TitleViewController))]
-    [HarmonyPatch(nameof(TitleViewController.SetText), MethodType.Normal)]
-    internal class TitleViewControllerPatch
+    internal class TitleViewControllerPatch : IAffinity
     {
+        private readonly PluginConfig _pluginConfig;
+        private readonly UIETitleBarManager _titleBarManager;
 
-        static void Postfix(ref TitleViewController __instance)
+        public TitleViewControllerPatch(PluginConfig pluginConfig, UIETitleBarManager titleBarManager)
         {
-            GameObject bg = __instance.gameObject.transform.Find("BG")?.gameObject;
+            _pluginConfig = pluginConfig;
+            _titleBarManager = titleBarManager;
+        }
 
-            ImageView iv = bg?.GetComponent<ImageView>();
+        [AffinityPostfix]
+        [AffinityPatch(typeof(TitleViewController), nameof(TitleViewController.SetText))]
+        internal void Postfix(ref TitleViewController __instance)
+        {
+            /*GameObject bg = __instance.gameObject.transform.Find("BG")?.gameObject;
 
-            UIETitleBarManager.AddElement(__instance);
+            ImageView iv = bg?.GetComponent<ImageView>();*/
 
-
-
-            // TODO reimplement
-
-            /*if(iv != null)
-                iv.color = UIEColorManager.instance.IsAdvanced() ? UIEColorManager.instance.bannerTop : UIEColorManager.instance.SimplePrimaryNormal;*/
+            _titleBarManager.AddElement(__instance);
         }
 
     }

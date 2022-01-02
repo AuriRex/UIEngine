@@ -1,14 +1,20 @@
-﻿using HarmonyLib;
-using UIEngine.Managers;
-using System;
+﻿using SiraUtil.Affinity;
+using UIEngine.Configuration;
 using UnityEngine;
 
 namespace UIEngine.HarmonyPatches
 {
-    [HarmonyPatch(typeof(LevelListTableCell))]
-    [HarmonyPatch(nameof(LevelListTableCell.SetDataFromLevelAsync), MethodType.Normal)]
-    internal class LevelListTableCellPatch
+    internal class LevelListTableCellPatch : IAffinity
     {
+        private readonly PluginConfig _pluginConfig;
+
+        public LevelListTableCellPatch(PluginConfig pluginConfig)
+        {
+            _pluginConfig = pluginConfig;
+        }
+
+        [AffinityPostfix]
+        [AffinityPatch(typeof(LevelListTableCell), nameof(LevelListTableCell.SetDataFromLevelAsync))]
         static void Postfix(ref LevelListTableCell __instance,
             ref Color ____highlightBackgroundColor,
             ref Color ____selectedBackgroundColor,
